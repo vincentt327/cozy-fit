@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="Cozy Fit"/>
-<link rel="manifest" href="manifest.json"/>
+<link rel="manifest" href="./manifest.json"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
 <title>Cozy Fit</title>
@@ -61,7 +61,7 @@ function getSharedData(){
   const p=new URLSearchParams(window.location.search);
   if(p.get("shared")==="1"){
     const text=p.get("text")||"";const url=p.get("url")||"";const title=p.get("title")||"";
-    window.history.replaceState({},"","/");
+    window.history.replaceState({},"",window.location.pathname);
     return{text,url,title,hasData:!!(text||url)};
   }
   return{text:"",url:"",title:"",hasData:false};
@@ -698,7 +698,7 @@ ReactDOM.render(<CozyFitApp/>,document.getElementById("root"));
 
 // Register Service Worker
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").then(r=>console.log("SW registered",r.scope)).catch(e=>console.error("SW failed",e));
+  navigator.serviceWorker.register("./sw.js").then(r=>console.log("SW registered",r.scope)).catch(e=>console.error("SW failed",e));
 }
 </script>
 </body>
