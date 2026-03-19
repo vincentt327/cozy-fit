@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#D4725C"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Cozy Fit"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
+<title>Cozy Fit</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body,#root{height:100%;overscroll-behavior:none}
+body{font-family:'Quicksand',sans-serif;background:#FFF8F0;color:#4A3728}
+.cozy-input:focus{border-color:#D4725C !important}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(74,55,40,0.12)}
+input::placeholder,textarea::placeholder{color:#C8B9AB}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#FFF8F0}
+::-webkit-scrollbar-thumb{background:#C8B9AB;border-radius:4px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes xpFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(1.2)}}
+textarea{font-family:'Quicksand',sans-serif;resize:vertical}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+const{useState,useEffect,useCallback,useRef}=React;
+
+// ─── DESIGN TOKENS ───
+const T={cream:"#FFF8F0",warmWhite:"#FFFCF7",card:"#FFFFFF",
+  terra:"#D4725C",terraLight:"#E8947F",terraSoft:"#F5D4CC",
+  rose:"#C98B8B",roseLight:"#E4B8B8",roseSoft:"#F5E0E0",
+  sage:"#7EA07A",sageLight:"#A3C49F",sageSoft:"#DFF0DD",
+  gold:"#C9A84C",goldLight:"#E0C76E",goldSoft:"#FFF3D4",
+  sky:"#7BAAC4",skyLight:"#A3C8DD",skySoft:"#DBF0FF",
+  brown:"#4A3728",brownMid:"#7A6455",brownLight:"#A89585",brownPale:"#C8B9AB",
+  shadow:"0 2px 12px rgba(74,55,40,0.08)",shadowLift:"0 6px 24px rgba(74,55,40,0.12)",
+  r:"16px",rSm:"10px",rPill:"50px"};
+
+// ─── STORAGE (localStorage for PWA) ───
+const KS={pro:"cf-pro",meals:"cf-meals",work:"cf-work",prog:"cf-prog",cust:"cf-cust",photos:"cf-photos",plans:"cf-plans"};
+const td=()=>new Date().toISOString().split("T")[0];
+const ld=(k,f)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch{return f}};
+const sv=(k,d)=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){console.error(e)}};
+const lvl=x=>Math.floor((x||0)/150)+1;
+const xpPct=x=>(((x||0)%150)/150)*100;
+const xpNeed=x=>150-((x||0)%150);
+
+// ─── SHARE TARGET ───
+function getSharedData(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get("shared")==="1"){
+    const text=p.get("text")||"";const url=p.get("url")||"";const title=p.get("title")||"";
+    window.history.replaceState({},"","/");
+    return{text,url,title,hasData:!!(text||url)};
+  }
+  return{text:"",url:"",title:"",hasData:false};
+}
+const SHARED=getSharedData();
+
+// ─── ENCOURAGEMENT ───
+const CHEERS=["You're doing amazing! 💕","Every rep counts, queen! 👑","Stronger every single day 💪",
+  "Your future self is thanking you! 🌟","Consistency beats perfection 🌸","Look at you GO! 🔥",
+  "Small steps, big results 🌿","You showed up — that's everything ✨","Be proud of yourself today 💖",
+  "Building a better you, one day at a time 🦋","Rest days are growth days too 🌙",
+  "Progress isn't always linear — keep going! 🌈","Your body is incredible — fuel it well 🍃",
+  "Discipline is self-love in action 💕","You've got this, no question 💪",
+  "Today's effort is tomorrow's strength 🌻","Strong is beautiful 💖"];
+const cheer=()=>CHEERS[Math.floor(Math.random()*CHEERS.length)];
+
+// ─── EXERCISES ───
+const EXERCISES={"Chest":{emoji:"🫁",color:T.terra,items:["Barbell Bench Press","Incline Bench Press","Decline Bench Press","Dumbbell Bench Press","Incline Dumbbell Press","Dumbbell Flyes","Incline Flyes","Cable Flyes","Cable Crossover","Pec Deck Machine","Push-ups","Wide Push-ups","Diamond Push-ups","Decline Push-ups","Chest Dips","Landmine Press","Svend Press","Floor Press","Smith Machine Bench"]},"Back":{emoji:"🔙",color:"#6B8E6B",items:["Pull-ups","Chin-ups","Lat Pulldown","Wide-Grip Pulldown","Close-Grip Pulldown","Barbell Row","Pendlay Row","Dumbbell Row","Single-Arm DB Row","Cable Row","Seated Cable Row","T-Bar Row","Face Pulls","Deadlift","Rack Pull","Hyperextensions","Reverse Flyes","Inverted Row","Meadows Row","Straight-Arm Pulldown","Chest-Supported Row","Seal Row","Kroc Row","Pullovers"]},"Shoulders":{emoji:"🏔️",color:T.sky,items:["Overhead Press","Dumbbell Shoulder Press","Arnold Press","Seated DB Press","Push Press","Lateral Raises","Cable Lateral Raise","Front Raises","Rear Delt Flyes","Reverse Pec Deck","Upright Row","Barbell Shrugs","Dumbbell Shrugs","Pike Push-ups","Handstand Push-ups","Lu Raises","Bus Drivers","Bradford Press","Plate Front Raise","Machine Shoulder Press","Landmine Lateral Raise"]},"Biceps":{emoji:"💪",color:T.rose,items:["Barbell Curl","EZ-Bar Curl","Dumbbell Curl","Alternating DB Curl","Hammer Curl","Preacher Curl","Concentration Curl","Cable Curl","Incline DB Curl","Spider Curl","Reverse Curl","Zottman Curl","21s Curl","Rope Hammer Curl","Cross-Body Hammer Curl","Drag Curl","Bayesian Curl"]},"Triceps":{emoji:"🔱",color:"#9B7EA0",items:["Tricep Pushdown","Rope Pushdown","Overhead Tricep Extension","Cable Overhead Extension","Skull Crushers","Close-Grip Bench Press","Tricep Dips","Bench Dips","Kickbacks","JM Press","Diamond Push-ups","Tate Press","French Press","Single-Arm Pushdown"]},"Quads":{emoji:"🦵",color:T.sage,items:["Barbell Back Squat","Front Squat","Goblet Squat","Leg Press","Hack Squat","Leg Extension","Lunges","Walking Lunges","Reverse Lunges","Bulgarian Split Squat","Step-ups","Box Squat","Sissy Squat","Wall Sit","Pistol Squat","Smith Machine Squat","Zercher Squat","Landmine Squat","Safety Bar Squat","Belt Squat","Cyclist Squat"]},"Hamstrings":{emoji:"🦿",color:"#A08060",items:["Romanian Deadlift","Stiff-Leg Deadlift","Single-Leg RDL","Lying Leg Curl","Seated Leg Curl","Nordic Curl","Good Morning","Glute-Ham Raise","Sliding Leg Curl","Kettlebell Swing","Cable Pull-Through","Sumo Deadlift","Deficit Deadlift","Trap Bar Deadlift"]},"Glutes":{emoji:"🍑",color:"#D4886B",items:["Hip Thrust","Barbell Hip Thrust","Single-Leg Hip Thrust","Glute Bridge","Banded Glute Bridge","Cable Kickback","Donkey Kicks","Fire Hydrants","Frog Pumps","Banded Walks","Clamshells","Hip Abduction Machine","Cable Hip Abduction","Sumo Deadlift","Curtsy Lunge","Glute-Focused Back Extension","B-Stance Hip Thrust","Kas Glute Bridge"]},"Calves":{emoji:"🦶",color:"#8B9DAF",items:["Standing Calf Raise","Seated Calf Raise","Single-Leg Calf Raise","Donkey Calf Raise","Leg Press Calf Raise","Smith Machine Calf Raise","Tibialis Raise","Jump Rope Calf Work"]},"Core & Abs":{emoji:"🔥",color:T.gold,items:["Plank","Side Plank","Dead Bug","Russian Twist","Cable Crunch","Hanging Leg Raise","Hanging Knee Raise","Ab Wheel Rollout","Mountain Climbers","Bird Dog","Woodchop","Cable Woodchop","Pallof Press","V-ups","Bicycle Crunch","Toe Touches","Flutter Kicks","Dragon Flag","L-Sit Hold","Hollow Hold","Decline Sit-ups","Reverse Crunch","Copenhagen Plank","Suitcase Carry","Farmer's Walk (Core)","Turkish Get-up","Leg Raise","Scissor Kicks","Heel Taps","Bear Crawl"]},"Cardio":{emoji:"🫀",color:"#CC6666",items:["Running","Jogging","Sprints","Incline Walking","Treadmill HIIT","Cycling","Stationary Bike","Spin Class","Swimming","Rowing Machine","Stair Climber","Elliptical","Jump Rope","Skipping","Boxing","Shadow Boxing","Battle Ropes","Burpees","Jumping Jacks","High Knees","Butt Kicks","Assault Bike","Hiking","Dance Cardio","Kickboxing","Sled Push","Sled Pull"]},"Full Body":{emoji:"⚡",color:"#7B68AE",items:["Clean & Press","Power Clean","Snatch","Thrusters","Turkish Get-up","Man Makers","Farmer's Walk","Sandbag Carry","Med Ball Slam","Wall Balls","Box Jumps","Broad Jumps","Sled Push","Prowler Push","Tire Flips","Renegade Row","Devil Press","Dumbbell Complex","Barbell Complex","Bear Complex","Kettlebell Clean","Kettlebell Snatch"]},"Flexibility & Mobility":{emoji:"🧘",color:"#8BAFAF",items:["Yoga Flow","Vinyasa Sequence","Static Stretching","Dynamic Stretching","Foam Rolling","Hip Flexor Stretch","90/90 Stretch","Pigeon Pose","Frog Stretch","Hamstring Stretch","Quad Stretch","Calf Stretch","Shoulder Dislocates","Cat-Cow","Child's Pose","Downward Dog","Cobra Stretch","Thread the Needle","Thoracic Rotation","World's Greatest Stretch","Couch Stretch","Jefferson Curl","Banded Shoulder Stretch","Lacrosse Ball Work","Wrist Circles","Ankle Circles","Neck Stretches","Spinal Decompression Hang"]},"Pilates":{emoji:"🤸",color:"#C47DAF",items:["The Hundred","Roll Up","Single Leg Circle","Rolling Like a Ball","Single Leg Stretch","Double Leg Stretch","Spine Stretch Forward","Open Leg Rocker","Corkscrew","Saw","Swan Dive","Single Leg Kick","Double Leg Kick","Neck Pull","Scissors","Bicycle","Shoulder Bridge","Side Kick Series","Teaser","Swimming (Pilates)","Leg Pull Front","Leg Pull Back","Side Bend","Boomerang","Seal","Mermaid Stretch","Clam (Pilates)","Pilates Push-up","Reformer Footwork","Reformer Long Stretch","Reformer Elephant","Reformer Knee Stretch","Cadillac Roll Down","Spine Corrector","Pilates Ring Squeeze"]},"Barre":{emoji:"🩱",color:"#D4728B",items:["Plié Squats","Relevé","First Position Pulse","Second Position Hold","Barre Leg Lift","Arabesque Lift","Attitude Lift","Passé Balance","Curtsy Lunge Pulse","Barre Tricep Press","Parallel Thigh Work","Turned-Out Thigh Work","Pretzel","Barre Bicep Curl","Seat Work","Standing Seat Lift","Waterski","Wide Second Plié","Barre Core Fold","Chair Pose Pulse","Rond de Jambe","Tendu Series","Battement","Inner Thigh Squeeze","Barre Push-up"]},"Classes & Studio":{emoji:"🏠",color:"#7BA5C4",items:["Spin / Indoor Cycling","HIIT Class","CrossFit WOD","F45 Session","Bootcamp","Body Pump","Body Combat","Body Balance","Zumba","Aqua Aerobics","Step Aerobics","TRX Suspension Training","Functional Training Class","Circuit Training","Tabata Class","Hot Yoga","Yin Yoga","Power Yoga","Ashtanga Yoga","Bikram Yoga","Hatha Yoga","Aerial Yoga","Pole Fitness","Aerial Hoop","Gymnastics Class","Martial Arts Class","Muay Thai","Jiu Jitsu","Capoeira","Rock Climbing","Trampolining","Reformer Pilates Class","Mat Pilates Class","Barre Class","Dance Fitness","Ballet Fit","Stretch & Tone"]},"Dance & Movement":{emoji:"💃",color:"#D4A05C",items:["Zumba","Dance Cardio","Hip-Hop Dance","Contemporary Dance","Ballet Class","Salsa","Afrobeats Dance","K-Pop Dance","Bollywood Dance","Jazz Dance","Swing Dance","Bachata","Line Dancing","Dancehall","Capoeira","Belly Dance","Tap Dance","Burlesque Fitness","Reggaeton Fitness"]}};
+
+// ─── SHARED COMPONENTS ───
+function Card({children,style={},onClick,hover=false}){
+  return <div onClick={onClick} className={hover?"card-hover":""}
+    style={{background:T.card,borderRadius:T.r,padding:"18px 20px",boxShadow:T.shadow,
+    marginBottom:14,cursor:onClick?"pointer":"default",transition:"all 0.2s",
+    border:`1.5px solid ${T.terraSoft}`,...style}}>{children}</div>;
+}
+function Btn({children,onClick,color=T.terra,full=false,outline=false,small=false,disabled=false,style={}}){
+  return <button onClick={disabled?undefined:onClick} style={{
+    background:outline?"transparent":disabled?T.brownPale:color,
+    border:outline?`2px solid ${color}`:"none",color:outline?color:"#fff",
+    fontFamily:"'Fredoka'",fontSize:small?"13px":"15px",fontWeight:600,
+    padding:small?"8px 16px":"12px 24px",borderRadius:T.rPill,cursor:disabled?"default":"pointer",
+    width:full?"100%":"auto",transition:"all 0.15s",opacity:disabled?0.6:1,
+    boxShadow:outline||disabled?"none":`0 3px 12px ${color}33`,
+    WebkitTapHighlightColor:"transparent",...style}}>{children}</button>;
+}
+function Input({value,onChange,placeholder,type="text",style={}}){
+  return <input type={type} inputMode={type==="number"?"decimal":"text"}
+    value={value} onChange={onChange} placeholder={placeholder} className="cozy-input"
+    style={{background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
+    fontFamily:"'Quicksand'",fontSize:"15px",fontWeight:500,padding:"12px 16px",
+    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
+    WebkitAppearance:"none",transition:"border-color 0.2s",...style}}/>;
+}
+function TextArea({value,onChange,placeholder,rows=4,style={}}){
+  return <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows}
+    className="cozy-input"
+    style={{background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
+    fontFamily:"'Quicksand'",fontSize:"14px",fontWeight:500,padding:"12px 16px",
+    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
+    WebkitAppearance:"none",transition:"border-color 0.2s",lineHeight:1.5,...style}}/>;
+}
+function Select({value,onChange,options}){
+  return <select value={value} onChange={onChange} style={{
+    background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
+    fontFamily:"'Quicksand'",fontSize:"15px",fontWeight:500,padding:"12px 16px",
+    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
+    WebkitAppearance:"none",appearance:"none",
+    backgroundImage:"url(\"data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%237A6455' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E\")",
+    backgroundRepeat:"no-repeat",backgroundPosition:"right 14px center"}}>
+    {options.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+  </select>;
+}
+function Badge({children,color=T.terra}){
+  return <span style={{display:"inline-flex",alignItems:"center",gap:4,
+    background:`${color}18`,color,fontFamily:"'Fredoka'",fontSize:"12px",
+    fontWeight:600,padding:"4px 10px",borderRadius:T.rPill}}>{children}</span>;
+}
+function Ring({pct,size=60,stroke=5,color=T.terra,children}){
+  const r=(size-stroke)/2,c=2*Math.PI*r,o=c-(pct/100)*c;
+  return <div style={{position:"relative",width:size,height:size}}>
+    <svg width={size} height={size} style={{transform:"rotate(-90deg)"}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={`${color}22`} strokeWidth={stroke}/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+        strokeDasharray={c} strokeDashoffset={o} strokeLinecap="round" style={{transition:"stroke-dashoffset 0.6s"}}/>
+    </svg>
+    <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{children}</div>
+  </div>;
+}
+function Sparkle({size=16,color=T.gold,style={}}){
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style}>
+    <path d="M12 2L13.5 9L20 7L14.5 12L20 17L13.5 15L12 22L10.5 15L4 17L9.5 12L4 7L10.5 9L12 2Z" fill={color}/>
+  </svg>;
+}
+function CheerBanner(){const[msg]=useState(cheer);
+  return <div style={{background:`linear-gradient(135deg,${T.goldSoft},${T.terraSoft})`,
+    borderRadius:T.r,padding:"14px 18px",marginBottom:14,textAlign:"center",
+    border:`1.5px solid ${T.goldLight}`}}>
+    <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,fontWeight:500}}>{msg}</p></div>;
+}
+
+// ─── TAB BAR ───
+function TabBar({tab,setTab}){
+  const tabs=[{id:"home",icon:"🏡",l:"Home"},{id:"meals",icon:"🍽️",l:"Meals"},
+    {id:"train",icon:"💪",l:"Train"},{id:"progress",icon:"📈",l:"Progress"}];
+  return <div style={{display:"flex",background:T.card,borderTop:`1.5px solid ${T.terraSoft}`,
+    position:"sticky",bottom:0,zIndex:50,paddingBottom:"env(safe-area-inset-bottom,6px)",
+    boxShadow:"0 -2px 12px rgba(74,55,40,0.06)"}}>
+    {tabs.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{
+      flex:1,background:"none",border:"none",padding:"10px 0 8px",cursor:"pointer",
+      display:"flex",flexDirection:"column",alignItems:"center",gap:2,
+      WebkitTapHighlightColor:"transparent"}}>
+      <span style={{fontSize:"22px",filter:tab===t.id?"none":"grayscale(0.6) opacity(0.5)"}}>{t.icon}</span>
+      <span style={{fontFamily:"'Fredoka'",fontSize:"11px",fontWeight:tab===t.id?600:400,
+        color:tab===t.id?T.terra:T.brownLight}}>{t.l}</span>
+      {tab===t.id&&<div style={{width:20,height:3,borderRadius:2,background:T.terra,marginTop:1}}/>}
+    </button>)}
+  </div>;
+}
+
+// ─── ONBOARDING ───
+function Onboarding({onDone}){
+  const[step,setStep]=useState(0);
+  const[name,setName]=useState("");const[age,setAge]=useState("");
+  const[height,setHeight]=useState("");const[weight,setWeight]=useState("");
+  const[goalWeight,setGoalWeight]=useState("");
+  const[activity,setActivity]=useState("moderate");const[goal,setGoal]=useState("muscle");
+  const[plan,setPlan]=useState(null);const[loading,setLoading]=useState(false);
+  const actL={sedentary:"Sedentary",light:"Light (1-2 days/wk)",moderate:"Moderate (3-5 days/wk)",active:"Very Active (6-7 days/wk)",athlete:"Athlete (2x daily)"};
+  const goalL={muscle:"Build Muscle & Tone",lose:"Lose Fat & Lean Out",maintain:"Maintain & Stay Healthy",recomp:"Body Recomposition"};
+  const genPlan=async()=>{setLoading(true);
+    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,
+        messages:[{role:"user",content:`Fitness coach. User: ${name}, Age ${age}, ${height}cm, current weight ${weight}kg, goal weight ${goalWeight||"not specified"}kg, ${actL[activity]}, Goal: ${goalL[goal]}. Calculate BMR (Mifflin-St Jeor female), TDEE, recommend calories, protein(g), training days/week. Factor in their goal weight when setting calorie targets (deficit if goal weight is lower, surplus if higher). Warm 2-sentence encouragement. ONLY valid JSON: {"calories":number,"protein":number,"trainingDays":number,"message":"...","bmr":number,"tdee":number}`}]})});
+      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
+      setPlan(JSON.parse(txt.replace(/```json|```/g,"").trim()));
+    }catch{const w=parseFloat(weight)||60,h=parseFloat(height)||165,a=parseInt(age)||25,gw=parseFloat(goalWeight)||0;
+      const bmr=Math.round(10*w+6.25*h-5*a-161);const mult={sedentary:1.2,light:1.375,moderate:1.55,active:1.725,athlete:1.9};
+      const tdee=Math.round(bmr*(mult[activity]||1.55));
+      const autoAdj=gw>0?(gw<w?-400:gw>w?250:0):0;
+      const adj={muscle:250,lose:-400,maintain:0,recomp:0};
+      const calAdj=goal==="muscle"||goal==="lose"?adj[goal]:autoAdj;
+      setPlan({calories:Math.round(tdee+calAdj),protein:Math.round(w*1.8),trainingDays:goal==="muscle"?5:4,
+        message:`Welcome ${name}! I've crafted a plan just for you. Let's crush this together! 💪`,bmr,tdee});
+    }setLoading(false);};
+  const finish=()=>{onDone({name:name.trim(),age:parseInt(age)||25,height:parseFloat(height)||165,
+    weight:parseFloat(weight)||60,goalWeight:parseFloat(goalWeight)||0,activity,goal,calGoal:plan.calories,proGoal:plan.protein,
+    trainingDays:plan.trainingDays,xp:0,streak:1,created:td()});};
+  const ws={animation:"fadeUp 0.5s ease",textAlign:"center",width:"100%",maxWidth:360};
+  return <div style={{minHeight:"100vh",background:`linear-gradient(180deg,${T.cream},${T.terraSoft})`,
+    padding:"24px 20px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+    {step===0&&<div style={ws}><span style={{fontSize:"52px"}}>🌸</span>
+      <h1 style={{fontFamily:"'Fredoka'",fontSize:"28px",color:T.terra,fontWeight:700,margin:"16px 0 8px"}}>Cozy Fit</h1>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"15px",color:T.brownMid,marginBottom:32}}>Your warm little fitness companion 💕</p>
+      <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:10}}>What's your name?</p>
+        <Input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name..."/><div style={{height:14}}/>
+        <Btn onClick={()=>name.trim()&&setStep(1)} color={T.terra} full disabled={!name.trim()}>Next →</Btn></Card></div>}
+    {step===1&&<div style={ws}><span style={{fontSize:"42px"}}>📏</span>
+      <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,margin:"12px 0 6px"}}>Tell me about you, {name}!</h2>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:24}}>All metric 📐</p>
+      <Card style={{textAlign:"left"}}><div style={{display:"flex",flexDirection:"column",gap:12}}>
+        {[["Age",age,setAge,"25"],["Height (cm)",height,setHeight,"165"],["Current Weight (kg)",weight,setWeight,"60"],["Goal Weight (kg)",goalWeight,setGoalWeight,"55"]].map(([l,v,fn,p])=>
+          <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>{l}</p>
+            <Input value={v} onChange={e=>fn(e.target.value)} type="number" placeholder={p}/></div>)}
+        <Btn onClick={()=>age&&height&&weight&&setStep(2)} color={T.terra} full disabled={!age||!height||!weight}>Next →</Btn>
+      </div></Card></div>}
+    {step===2&&<div style={ws}><span style={{fontSize:"42px"}}>🎯</span>
+      <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,margin:"12px 0 6px"}}>Goals & Lifestyle</h2>
+      <Card style={{textAlign:"left"}}><div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>Activity Level</p>
+          <Select value={activity} onChange={e=>setActivity(e.target.value)} options={[
+            {value:"sedentary",label:"🪑 Sedentary"},{value:"light",label:"🚶 Light"},
+            {value:"moderate",label:"🏃 Moderate"},{value:"active",label:"💪 Very Active"},
+            {value:"athlete",label:"🏆 Athlete"}]}/></div>
+        <div><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>Main Goal</p>
+          <Select value={goal} onChange={e=>setGoal(e.target.value)} options={[
+            {value:"muscle",label:"💪 Build Muscle & Tone"},{value:"lose",label:"🔥 Lose Fat"},
+            {value:"maintain",label:"🌿 Maintain"},{value:"recomp",label:"✨ Recomp"}]}/></div>
+        <Btn onClick={()=>{setStep(3);genPlan();}} color={T.terra} full>Generate Plan ✨</Btn>
+      </div></Card></div>}
+    {step===3&&<div style={ws}>
+      {loading?<><span style={{fontSize:"42px",display:"inline-block",animation:"pulse 1.2s ease-in-out infinite"}}>🪄</span>
+        <p style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.brownMid,marginTop:16}}>Crafting your plan...</p></>
+      :plan?<><span style={{fontSize:"42px"}}>🎉</span>
+        <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.terra,fontWeight:700,margin:"12px 0 16px"}}>Your Plan</h2>
+        <Card style={{textAlign:"left",background:`linear-gradient(135deg,${T.sageSoft},${T.warmWhite})`,border:`1.5px solid ${T.sageLight}`}}>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,lineHeight:1.6,marginBottom:16}}>{plan.message}</p>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            {[["🔥",plan.calories,"kcal/day","Calories",T.terra],["🥩",plan.protein+"g","/day","Protein",T.sage],
+              ["📊",plan.bmr,"kcal","BMR",T.sky],["⚡",plan.tdee,"kcal","TDEE",T.gold]].map(([ic,val,unit,lbl,col])=>
+              <div key={lbl} style={{background:T.card,borderRadius:T.rSm,padding:"12px",textAlign:"center",border:`1.5px solid ${col}33`}}>
+                <span style={{fontSize:"18px"}}>{ic}</span>
+                <p style={{fontFamily:"'Fredoka'",fontSize:"18px",color:col,fontWeight:700,margin:"4px 0 0"}}>{val}<span style={{fontSize:"11px"}}> {unit}</span></p>
+                <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600}}>{lbl}</p></div>)}
+          </div>
+        </Card>
+        <Btn onClick={finish} color={T.terra} full style={{marginTop:8}}>Let's Go! 🌟</Btn>
+      </>:null}
+    </div>}
+  </div>;
+}
+
+// ─── HOME ───
+function Home({profile,meals,workouts,progress,setTab}){
+  const d=td();const mT=meals[d]||[];const wT=workouts[d]||[];
+  const cal=mT.reduce((s,m)=>s+(m.cal||0),0);const pro=mT.reduce((s,m)=>s+(m.protein||0),0);
+  const cG=profile.calGoal||2000;const pG=profile.proGoal||120;
+  const gW=profile.goalWeight||0;
+  const startW=profile.weight||0;
+  const latestW=progress.length>0?progress[0].wt:startW;
+  const weightDiff=gW>0?Math.abs(latestW-gW).toFixed(1):0;
+  const weightPct=gW>0&&startW!==gW?Math.min(Math.max(((startW-latestW)/(startW-gW))*100,0),100):0;
+  return <div>
+    <div style={{textAlign:"center",padding:"20px 0 8px"}}>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid}}>
+        {new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</p>
+      <h1 style={{fontFamily:"'Fredoka'",fontSize:"26px",color:T.brown,fontWeight:700,margin:"6px 0"}}>Hi {profile.name}! ✨</h1></div>
+    <CheerBanner/>
+    <Card style={{background:`linear-gradient(135deg,${T.goldSoft},${T.warmWhite})`,border:`1.5px solid ${T.goldLight}`}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <Sparkle size={20}/><span style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.gold,fontWeight:700}}>Level {lvl(profile.xp)}</span></div>
+        <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid}}>{xpNeed(profile.xp)} XP to next</span></div>
+      <div style={{background:`${T.gold}22`,borderRadius:T.rPill,height:14,overflow:"hidden"}}>
+        <div style={{height:"100%",borderRadius:T.rPill,width:`${xpPct(profile.xp)}%`,
+          background:`linear-gradient(90deg,${T.gold},${T.terra})`,transition:"width 0.6s"}}/></div></Card>
+    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,marginBottom:16,fontWeight:600}}>Today's Goals 🎯</p>
+      <div style={{display:"flex",justifyContent:"space-around",alignItems:"center"}}>
+        <div style={{textAlign:"center"}}><Ring pct={Math.min((cal/cG)*100,100)} color={T.terra}>
+          <span style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.terra,fontWeight:700}}>{cal}</span></Ring>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>/ {cG} kcal</p></div>
+        <div style={{textAlign:"center"}}><Ring pct={Math.min((pro/pG)*100,100)} color={T.sage}>
+          <span style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.sage,fontWeight:700}}>{pro}g</span></Ring>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>/ {pG}g protein</p></div>
+        <div style={{textAlign:"center"}}><Ring pct={wT.length>0?100:0} color={T.sky}>
+          <span style={{fontSize:"20px"}}>{wT.length>0?"✅":"💤"}</span></Ring>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>{wT.length} workout{wT.length!==1?"s":""}</p></div>
+      </div></Card>
+    <Card style={{background:`linear-gradient(135deg,${T.terraSoft},${T.roseSoft})`,border:`1.5px solid ${T.roseLight}`}}>
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <span style={{fontSize:"36px"}}>🔥</span>
+        <div><p style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.terra,fontWeight:700}}>{profile.streak||0} Day Streak</p>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginTop:2}}>Keep it burning! 💕</p></div></div></Card>
+    {gW>0&&<Card style={{background:`linear-gradient(135deg,${T.skySoft},${T.warmWhite})`,border:`1.5px solid ${T.skyLight}`}}>
+      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.sky,fontWeight:600,marginBottom:10}}>⚖️ Weight Goal</p>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+        <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid}}>
+          {latestW>0?`Current: ${latestW}kg`:`Start: ${startW}kg`}</span>
+        <span style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:700}}>Goal: {gW}kg</span></div>
+      <div style={{background:`${T.sky}22`,borderRadius:T.rPill,height:14,overflow:"hidden"}}>
+        <div style={{height:"100%",borderRadius:T.rPill,width:`${weightPct}%`,
+          background:`linear-gradient(90deg,${T.sky},${T.sage})`,transition:"width 0.6s"}}/></div>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight,marginTop:6,textAlign:"center"}}>
+        {weightDiff>0?`${weightDiff}kg to go — you've got this! 💪`:"You're at your goal! 🎉"}</p>
+    </Card>}
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+      <Card onClick={()=>setTab("meals")} hover style={{textAlign:"center",padding:"20px 12px"}}>
+        <span style={{fontSize:"28px"}}>🥗</span><p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginTop:8}}>Log a Meal</p></Card>
+      <Card onClick={()=>setTab("train")} hover style={{textAlign:"center",padding:"20px 12px"}}>
+        <span style={{fontSize:"28px"}}>🏋️‍♀️</span><p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginTop:8}}>Start Workout</p></Card></div>
+    <Card onClick={()=>setTab("settings")} hover style={{padding:"14px 20px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span>⚙️</span><span style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid}}>Settings</span></div>
+        <span style={{color:T.brownLight}}>›</span></div></Card>
+  </div>;
+}
+
+// ─── RECIPE IMPORT (paste + share target) ───
+function RecipeImport({onAdd,initialText=""}){
+  const[text,setText]=useState(initialText);
+  const[parsed,setParsed]=useState(null);
+  const[loading,setLoading]=useState(false);
+  const[show,setShow]=useState(!!initialText);
+
+  useEffect(()=>{if(initialText){setText(initialText);setShow(true);}},[initialText]);
+
+  const parse=async()=>{
+    if(!text.trim())return;setLoading(true);setParsed(null);
+    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        messages:[{role:"user",content:`Extract recipe info from this text (could be an Instagram caption, blog post, or any recipe text). If it contains a URL, try to infer the recipe from context. Parse into structured format.
+
+Text: "${text}"
+
+Respond ONLY with valid JSON: {"recipes":[{"name":"...","cal":number_or_estimate,"protein":number_or_estimate,"ingredients":["..."],"steps":"Brief instructions"}]}
+If calories/protein aren't mentioned, provide reasonable estimates based on ingredients. If multiple recipes, include all.`}]})});
+      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
+      setParsed(JSON.parse(txt.replace(/```json|```/g,"").trim()));
+    }catch{setParsed("error")}setLoading(false);
+  };
+
+  return <Card style={{border:`1.5px solid ${T.skyLight}`}}>
+    <div onClick={()=>setShow(!show)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
+      <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:600}}>📋 Import Recipe (Paste / Share)</p>
+      <span style={{color:T.brownLight,fontSize:"18px"}}>{show?"▲":"▼"}</span></div>
+    {show&&<div style={{marginTop:14}}>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,marginBottom:8,lineHeight:1.5}}>
+        Paste a recipe from Instagram, TikTok, a blog — anywhere! Or share directly from Instagram using the share button → Cozy Fit.</p>
+      <TextArea value={text} onChange={e=>setText(e.target.value)} rows={4}
+        placeholder="Paste recipe text here (Instagram caption, blog recipe, etc)..." style={{marginBottom:10}}/>
+      <Btn onClick={parse} color={T.sky} full disabled={loading||!text.trim()}>
+        {loading?"Parsing recipe... 🍳":"Parse Recipe ✨"}</Btn>
+      {parsed==="error"&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.rose,marginTop:10}}>
+        Couldn't parse that — try pasting more detail! 💔</p>}
+      {parsed&&parsed!=="error"&&parsed.recipes?.map((r,i)=>(
+        <div key={i} style={{marginTop:14,padding:16,background:T.cream,borderRadius:T.rSm,border:`1.5px solid ${T.skyLight}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8,gap:8}}>
+            <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,flex:1}}>{r.name}</p>
+            <div style={{display:"flex",gap:6,flexShrink:0}}>
+              <Badge color={T.terra}>{r.cal} kcal</Badge><Badge color={T.sage}>{r.protein}g</Badge></div></div>
+          {r.ingredients?.length>0&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:4}}>
+            <strong>Ingredients:</strong> {r.ingredients.join(", ")}</p>}
+          {r.steps&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}>
+            <strong>How:</strong> {r.steps}</p>}
+          <Btn onClick={()=>{onAdd(r);setText("");setParsed(null);}} color={T.sage} small>Log This ✅</Btn>
+        </div>
+      ))}
+    </div>}
+  </Card>;
+}
+
+// ─── MEALS ───
+function MealsPage({meals,setMeals,profile,addXP,sharedText}){
+  const[nm,setNm]=useState("");const[cal,setCal]=useState("");const[pro,setPro]=useState("");
+  const[rq,setRq]=useState("");const[recipes,setRecipes]=useState(null);const[ldg,setLdg]=useState(false);const[showGen,setShowGen]=useState(false);
+  const d=td();const list=meals[d]||[];
+  const tCal=list.reduce((s,m)=>s+(m.cal||0),0);const tPro=list.reduce((s,m)=>s+(m.protein||0),0);
+  const cG=profile.calGoal||2000;const pG=profile.proGoal||120;
+  const cR=Math.max(0,cG-tCal);const pR=Math.max(0,pG-tPro);
+
+  const add=()=>{if(!nm.trim())return;const up={...meals,[d]:[...list,{id:Date.now(),name:nm.trim(),cal:parseInt(cal)||0,
+    protein:parseInt(pro)||0,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};
+    setMeals(up);sv(KS.meals,up);addXP(15);setNm("");setCal("");setPro("");};
+  const rm=id=>{const up={...meals,[d]:list.filter(m=>m.id!==id)};setMeals(up);sv(KS.meals,up);};
+  const addRecipe=r=>{const up={...meals,[d]:[...(meals[d]||[]),{id:Date.now(),name:r.name,cal:r.cal||0,protein:r.protein||0,
+    time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};setMeals(up);sv(KS.meals,up);addXP(15);};
+  const gen=async()=>{setLdg(true);setRecipes(null);
+    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        messages:[{role:"user",content:`Generate 3 high-protein meal ideas. Remaining: ~${cR} kcal, ~${pR}g protein. Goal: muscle building. ${rq?`Preference: ${rq}`:"Any cuisine"}. ONLY valid JSON: [{"name":"...","cal":number,"protein":number,"ingredients":["..."],"steps":"Brief instructions"}]`}]})});
+      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
+      setRecipes(JSON.parse(txt.replace(/```json|```/g,"").trim()));
+    }catch{setRecipes("error")}setLdg(false);};
+
+  return <div>
+    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Meals 🍽️</h2>
+    <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:16}}>Fuel your gains</p>
+    <CheerBanner/>
+    <Card style={{background:`linear-gradient(135deg,${T.sageSoft},${T.warmWhite})`,border:`1.5px solid ${T.sageLight}`}}>
+      <div style={{display:"flex",justifyContent:"space-around"}}>
+        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.terra,fontWeight:700}}>{tCal}</p>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>/ {cG} kcal</p></div>
+        <div style={{width:1,background:T.brownPale}}/>
+        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.sage,fontWeight:700}}>{tPro}g</p>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>/ {pG}g protein</p></div>
+        <div style={{width:1,background:T.brownPale}}/>
+        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.sky,fontWeight:700}}>{list.length}</p>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>meals</p></div>
+      </div></Card>
+
+    {/* Recipe Import (paste / share target) */}
+    <RecipeImport onAdd={addRecipe} initialText={sharedText}/>
+
+    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:12}}>Log a Meal ✏️</p>
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        <Input value={nm} onChange={e=>setNm(e.target.value)} placeholder="What did you eat?"/>
+        <div style={{display:"flex",gap:10}}>
+          <Input value={cal} onChange={e=>setCal(e.target.value)} placeholder="Calories" type="number" style={{flex:1}}/>
+          <Input value={pro} onChange={e=>setPro(e.target.value)} placeholder="Protein (g)" type="number" style={{flex:1}}/></div>
+        <Btn onClick={add} color={T.terra} full>Log Meal ✨ +15 XP</Btn></div></Card>
+
+    {/* AI Recipe Generator */}
+    <Card style={{border:`1.5px solid ${T.goldLight}`}}>
+      <div onClick={()=>setShowGen(!showGen)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
+        <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.gold,fontWeight:600}}>✨ Recipe Ideas (AI)</p>
+        <span style={{color:T.brownLight,fontSize:"18px"}}>{showGen?"▲":"▼"}</span></div>
+      {showGen&&<div style={{marginTop:14}}>
+        <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}>
+          Remaining: <strong style={{color:T.terra}}>{cR} kcal</strong> · <strong style={{color:T.sage}}>{pR}g protein</strong></p>
+        <Input value={rq} onChange={e=>setRq(e.target.value)} placeholder="Preferences? (quick, vegan, Asian...)" style={{marginBottom:10}}/>
+        <Btn onClick={gen} color={T.gold} full disabled={ldg}>{ldg?"Cooking... 🍳":"Generate Recipes 🪄"}</Btn>
+        {recipes==="error"&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.rose,marginTop:10}}>Something went wrong 💔</p>}
+        {Array.isArray(recipes)&&recipes.map((r,i)=><div key={i} style={{marginTop:14,padding:16,background:T.cream,
+          borderRadius:T.rSm,border:`1.5px solid ${T.goldLight}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8,gap:8}}>
+            <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,flex:1}}>{r.name}</p>
+            <div style={{display:"flex",gap:6,flexShrink:0}}><Badge color={T.terra}>{r.cal} kcal</Badge><Badge color={T.sage}>{r.protein}g</Badge></div></div>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:4}}><strong>Ingredients:</strong> {r.ingredients?.join(", ")}</p>
+          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}><strong>How:</strong> {r.steps}</p>
+          <Btn onClick={()=>addRecipe(r)} color={T.sage} small>Log This ✅</Btn></div>)}</div>}</Card>
+
+    {/* Meal list */}
+    {list.slice().reverse().map(m=><Card key={m.id} style={{padding:"14px 18px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{flex:1}}><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{m.name}</p>
+          <div style={{display:"flex",gap:8,marginTop:4,flexWrap:"wrap"}}>
+            <span style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight}}>{m.time}</span>
+            <Badge color={T.terra}>{m.cal} kcal</Badge>{m.protein>0&&<Badge color={T.sage}>{m.protein}g</Badge>}</div></div>
+        <button onClick={()=>rm(m.id)} style={{background:`${T.rose}22`,border:"none",width:32,height:32,
+          borderRadius:"50%",cursor:"pointer",fontSize:"14px",color:T.rose,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+      </div></Card>)}
+    {!list.length&&<div style={{textAlign:"center",padding:"24px 0"}}><span style={{fontSize:"40px"}}>🍃</span>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownLight,marginTop:8}}>No meals yet!</p></div>}
+  </div>;
+}
+
+// ─── TRAIN (simplified for PWA — includes library, builder, log) ───
+function TrainPage({workouts,setWorkouts,customs,setCustoms,addXP,profile}){
+  const[view,setView]=useState("library");const[open,setOpen]=useState(null);
+  const[dur,setDur]=useState("30");const[sets,setSets]=useState("3");const[reps,setReps]=useState("12");
+  const[search,setSearch]=useState("");const[cName,setCName]=useState("");const[cExs,setCExs]=useState([]);
+  const d=td();const tList=workouts[d]||[];
+
+  const log=(name,cat)=>{const up={...workouts,[d]:[...tList,{id:Date.now(),name,cat,dur:parseInt(dur)||30,
+    sets:parseInt(sets)||3,reps:parseInt(reps)||12,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};
+    setWorkouts(up);sv(KS.work,up);addXP(25);};
+  const rmW=id=>{const up={...workouts,[d]:tList.filter(w=>w.id!==id)};setWorkouts(up);sv(KS.work,up);};
+  const addC=n=>{if(!cExs.includes(n))setCExs([...cExs,n]);};const rmC=n=>setCExs(cExs.filter(e=>e!==n));
+  const saveC=()=>{if(!cName.trim()||!cExs.length)return;const up=[...customs,{id:Date.now(),name:cName.trim(),exercises:cExs}];
+    setCustoms(up);sv(KS.cust,up);addXP(30);setCName("");setCExs([]);setView("library");};
+  const delC=id=>{const up=customs.filter(c=>c.id!==id);setCustoms(up);sv(KS.cust,up);};
+  const runC=r=>{const ne=r.exercises.map(ex=>({id:Date.now()+Math.random(),name:ex,cat:"Custom: "+r.name,
+    dur:parseInt(dur)||30,sets:parseInt(sets)||3,reps:parseInt(reps)||12,
+    time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}));
+    const up={...workouts,[d]:[...(workouts[d]||[]),...ne]};setWorkouts(up);sv(KS.work,up);addXP(40);};
+  const sL=search.toLowerCase();
+  const filtered=search?Object.entries(EXERCISES).reduce((a,[c,dd])=>{
+    const f=dd.items.filter(e=>e.toLowerCase().includes(sL));if(f.length)a.push([c,{...dd,items:f}]);return a;},[]):null;
+
+  return <div>
+    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Train 💪</h2>
+    <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:16}}>Build strength, build you</p>
+    <CheerBanner/>
+    <div style={{display:"flex",gap:8,marginBottom:16}}>
+      {[["library","🏋️ Library"],["builder","🔨 Builder"],["log",`📋 Log (${tList.length})`]].map(([id,l])=>
+        <Btn key={id} onClick={()=>setView(id)} color={T.terra} outline={view!==id} small style={{flex:1,fontSize:"12px"}}>{l}</Btn>)}
+    </div>
+    {view!=="log"&&<Card style={{padding:"14px 18px"}}><div style={{display:"flex",gap:10}}>
+      {[["Sets",sets,setSets],["Reps",reps,setReps],["Min",dur,setDur]].map(([l,v,fn])=>
+        <div key={l} style={{flex:1}}><p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600,marginBottom:4}}>{l}</p>
+          <Input value={v} onChange={e=>fn(e.target.value)} type="number"/></div>)}</div></Card>}
+    {view==="library"&&<>
+      <Input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 Search exercises..." style={{marginBottom:14}}/>
+      {customs.length>0&&<>{customs.map(r=><Card key={r.id} style={{border:`1.5px solid ${T.goldLight}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+          <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{r.name}</p>
+          <div style={{display:"flex",gap:6}}>
+            <Btn onClick={()=>runC(r)} color={T.sage} small style={{fontSize:"11px"}}>Start ▶</Btn>
+            <button onClick={()=>delC(r.id)} style={{background:`${T.rose}22`,border:"none",width:30,height:30,
+              borderRadius:"50%",cursor:"pointer",fontSize:"12px",color:T.rose}}>✕</button></div></div>
+        <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid}}>{r.exercises.join(" → ")}</p></Card>)}</>}
+      {(filtered||Object.entries(EXERCISES)).map(([cat,data])=>
+        <Card key={cat} onClick={open===cat?undefined:()=>setOpen(cat)} style={{cursor:"pointer",borderLeft:`4px solid ${data.color}`}}>
+          <div onClick={()=>setOpen(open===cat?null:cat)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
+            <span style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>
+              {data.emoji} {cat} <span style={{fontSize:"12px",color:T.brownLight}}>({data.items.length})</span></span>
+            <span style={{color:T.brownLight}}>{open===cat?"▲":"▼"}</span></div>
+          {open===cat&&<div style={{marginTop:12,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}} onClick={e=>e.stopPropagation()}>
+            {data.items.map(ex=><div key={ex} style={{background:T.cream,borderRadius:T.rSm,padding:"10px 12px"}}>
+              <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brown,fontWeight:600,display:"block",marginBottom:6}}>{ex}</span>
+              <div style={{display:"flex",gap:4}}>
+                <Btn onClick={()=>log(ex,cat)} color={data.color} small style={{fontSize:"10px",padding:"5px 10px",flex:1}}>Log</Btn>
+                <Btn onClick={()=>{addC(ex);setView("builder")}} color={T.gold} small outline style={{fontSize:"10px",padding:"5px 8px"}}>+</Btn></div></div>)}</div>}
+        </Card>)}
+    </>}
+    {view==="builder"&&<>
+      <Card style={{border:`1.5px solid ${T.goldLight}`,background:`linear-gradient(135deg,${T.goldSoft},${T.warmWhite})`}}>
+        <p style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.gold,fontWeight:600,marginBottom:12}}>🔨 Build a Routine</p>
+        <Input value={cName} onChange={e=>setCName(e.target.value)} placeholder="Routine name" style={{marginBottom:12}}/>
+        {cExs.length?<div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:12}}>
+          {cExs.map((ex,i)=><div key={ex} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
+            padding:"8px 12px",background:T.card,borderRadius:T.rSm}}>
+            <span style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brown}}>{i+1}. {ex}</span>
+            <button onClick={()=>rmC(ex)} style={{background:"none",border:"none",cursor:"pointer",color:T.rose,fontSize:"16px"}}>✕</button></div>)}</div>
+        :<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownLight,marginBottom:12}}>Tap exercises below to add!</p>}
+        <Btn onClick={saveC} color={T.gold} full disabled={!cName.trim()||!cExs.length}>Save ⭐ +30 XP</Btn></Card>
+      {Object.entries(EXERCISES).map(([cat,data])=><Card key={cat} style={{padding:"12px 16px",borderLeft:`4px solid ${data.color}`}}>
+        <p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginBottom:8}}>{data.emoji} {cat}</p>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+          {data.items.map(ex=><button key={ex} onClick={()=>addC(ex)} style={{
+            background:cExs.includes(ex)?data.color:T.cream,color:cExs.includes(ex)?"#fff":T.brown,
+            border:"none",borderRadius:T.rPill,padding:"6px 12px",fontFamily:"'Quicksand'",fontSize:"12px",
+            fontWeight:600,cursor:"pointer"}}>{ex}</button>)}</div></Card>)}</>}
+    {view==="log"&&<>{tList.length?tList.slice().reverse().map(w=><Card key={w.id} style={{padding:"14px 18px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{w.name}</p>
+          <div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}>
+            <span style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight}}>{w.time}</span>
+            <Badge color={T.terra}>{w.sets}×{w.reps}</Badge><Badge color={T.sky}>{w.dur} min</Badge></div></div>
+        <button onClick={()=>rmW(w.id)} style={{background:`${T.rose}22`,border:"none",width:32,height:32,
+          borderRadius:"50%",cursor:"pointer",fontSize:"14px",color:T.rose}}>✕</button></div></Card>)
+    :<div style={{textAlign:"center",padding:"32px 0"}}><span style={{fontSize:"40px"}}>🌿</span>
+      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownLight,marginTop:8}}>No exercises today!</p></div>}</>}
+  </div>;
+}
+
+// ─── PROGRESS ───
+function ProgressPage({progress,setProgress,addXP}){
+  const[wt,setWt]=useState("");const[waist,setWaist]=useState("");const[hips,setHips]=useState("");
+  const[arms,setArms]=useState("");const[note,setNote]=useState("");
+  const[viewPhoto,setViewPhoto]=useState(null);
+  const[photos,setPhotos]=useState(()=>ld(KS.photos,[]));
+  const fileRef=useRef(null);
+
+  const add=()=>{if(!wt&&!waist&&!hips&&!arms)return;
+    const up=[{id:Date.now(),date:td(),wt:parseFloat(wt)||0,waist:parseFloat(waist)||0,
+      hips:parseFloat(hips)||0,arms:parseFloat(arms)||0,note:note.trim()},...progress];
+    setProgress(up);sv(KS.prog,up);addXP(20);setWt("");setWaist("");setHips("");setArms("");setNote("");};
+  const rm=id=>{const up=progress.filter(p=>p.id!==id);setProgress(up);sv(KS.prog,up);};
+  const handlePhoto=e=>{const file=e.target.files?.[0];if(!file)return;
+    const img=new Image();const url=URL.createObjectURL(file);
+    img.onload=()=>{const mx=600;let w=img.width,h=img.height;
+      if(w>mx||h>mx){if(w>h){h=(h/w)*mx;w=mx}else{w=(w/h)*mx;h=mx}}
+      const c=document.createElement("canvas");c.width=w;c.height=h;
+      c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      const up=[{id:Date.now(),date:td(),data:c.toDataURL("image/jpeg",0.6)},...photos.slice(0,19)];
+      setPhotos(up);sv(KS.photos,up);addXP(10);};img.src=url;e.target.value="";};
+  const rmPhoto=id=>{const up=photos.filter(p=>p.id!==id);setPhotos(up);sv(KS.photos,up);};
+  const cd=progress.slice(0,14).reverse();const ws=cd.map(d=>d.wt).filter(Boolean);
+  const mn=ws.length?Math.min(...ws)-1:0;const mx=ws.length?Math.max(...ws)+1:100;const rg=mx-mn||1;
+
+  return <div>
+    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Progress 📈</h2>
+    <CheerBanner/>
+    {ws.length>1&&<Card style={{border:`1.5px solid ${T.roseLight}`}}>
+      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.rose,fontWeight:600,marginBottom:12}}>Weight Trend (kg)</p>
+      <div style={{display:"flex",alignItems:"flex-end",gap:6,height:120}}>
+        {cd.map((d,i)=>{const h=d.wt?((d.wt-mn)/rg)*90+16:0;
+          return <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+            <span style={{fontFamily:"'Quicksand'",fontSize:"9px",color:T.brownLight,fontWeight:600}}>{d.wt||""}</span>
+            <div style={{width:"100%",height:h,minWidth:8,background:`linear-gradient(to top,${T.terra},${T.rose})`,
+              borderRadius:"6px 6px 0 0",transition:"height 0.4s"}}/></div>;})}
+      </div></Card>}
+    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:12}}>Log Measurements 📏</p>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+        {[["Weight (kg)",wt,setWt],["Waist (cm)",waist,setWaist],["Hips (cm)",hips,setHips],["Arms (cm)",arms,setArms]].map(([l,v,fn])=>
+          <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600,marginBottom:4}}>{l}</p>
+            <Input value={v} onChange={e=>fn(e.target.value)} placeholder="—" type="number"/></div>)}
+      </div>
+      <Input value={note} onChange={e=>setNote(e.target.value)} placeholder="How are you feeling?" style={{marginBottom:12}}/>
+      <Btn onClick={add} color={T.rose} full>Log Progress ✨ +20 XP</Btn></Card>
+    <Card style={{border:`1.5px solid ${T.skyLight}`}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:600}}>📸 Progress Photos</p>
+        <Btn onClick={()=>fileRef.current?.click()} color={T.sky} small>Upload</Btn>
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{display:"none"}}/></div>
+      {photos.length?<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+        {photos.map(p=><div key={p.id} onClick={()=>setViewPhoto(p)} style={{position:"relative",paddingBottom:"100%",borderRadius:T.rSm,
+          overflow:"hidden",cursor:"pointer",border:`2px solid ${T.terraSoft}`}}>
+          <img src={p.data} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,background:"rgba(0,0,0,0.5)",padding:"3px 6px"}}>
+            <span style={{fontFamily:"'Quicksand'",fontSize:"9px",color:"#fff",fontWeight:600}}>
+              {new Date(p.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</span></div></div>)}
+      </div>:<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownLight}}>No photos yet 📷</p>}</Card>
+    {viewPhoto&&<div onClick={()=>setViewPhoto(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",
+      zIndex:999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
+      <img src={viewPhoto.data} style={{maxWidth:"100%",maxHeight:"70vh",borderRadius:T.r,objectFit:"contain"}}/>
+      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:"#fff",marginTop:12}}>
+        {new Date(viewPhoto.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</p>
+      <div style={{display:"flex",gap:12,marginTop:12}}>
+        <Btn onClick={e=>{e.stopPropagation();rmPhoto(viewPhoto.id);setViewPhoto(null)}} color={T.rose} small>Delete</Btn>
+        <Btn onClick={()=>setViewPhoto(null)} color={T.sky} small outline>Close</Btn></div></div>}
+    {progress.map(p=><Card key={p.id} style={{padding:"14px 18px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div><p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brown,fontWeight:600}}>
+          {new Date(p.date).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</p>
+          <div style={{display:"flex",gap:8,marginTop:6,flexWrap:"wrap"}}>
+            {p.wt>0&&<Badge color={T.terra}>⚖️ {p.wt}kg</Badge>}{p.waist>0&&<Badge color={T.sky}>Waist {p.waist}cm</Badge>}
+            {p.hips>0&&<Badge color={T.rose}>Hips {p.hips}cm</Badge>}{p.arms>0&&<Badge color={T.sage}>Arms {p.arms}cm</Badge>}</div>
+          {p.note&&<p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,marginTop:6,fontStyle:"italic"}}>"{p.note}"</p>}</div>
+        <button onClick={()=>rm(p.id)} style={{background:`${T.rose}22`,border:"none",width:30,height:30,
+          borderRadius:"50%",cursor:"pointer",fontSize:"12px",color:T.rose,flexShrink:0}}>✕</button></div></Card>)}
+  </div>;
+}
+
+// ─── SETTINGS ───
+function SettingsPage({profile,setProfile,setTab}){
+  const[name,setName]=useState(profile.name||"");const[cG,setCG]=useState(String(profile.calGoal||2000));
+  const[pG,setPG]=useState(String(profile.proGoal||120));
+  const[gW,setGW]=useState(String(profile.goalWeight||""));
+  const doSave=()=>{const up={...profile,name:name.trim()||profile.name,calGoal:parseInt(cG)||2000,
+    proGoal:parseInt(pG)||120,goalWeight:parseFloat(gW)||0};setProfile(up);sv(KS.pro,up);setTab("home");};
+  return <div>
+    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:16}}>Settings ⚙️</h2>
+    <Card><div style={{display:"flex",flexDirection:"column",gap:14}}>
+      {[["Your Name",name,setName,"text"],["Daily Calorie Goal",cG,setCG,"number"],
+        ["Daily Protein Goal (g)",pG,setPG,"number"],["Goal Weight (kg)",gW,setGW,"number"]].map(([l,v,fn,t])=>
+        <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>{l}</p>
+          <Input value={v} onChange={e=>fn(e.target.value)} type={t}/></div>)}
+      <Btn onClick={doSave} color={T.terra} full>Save 💕</Btn></div></Card>
+    <Card style={{background:T.cream}}>
+      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,fontWeight:600,marginBottom:6}}>Your Stats</p>
+      <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+        <Badge color={T.terra}>Height: {profile.height}cm</Badge><Badge color={T.sage}>Starting: {profile.weight}kg</Badge>
+        {profile.goalWeight>0&&<Badge color={T.gold}>Goal: {profile.goalWeight}kg</Badge>}
+        <Badge color={T.sky}>Age: {profile.age}</Badge><Badge color={T.gold}>Level {lvl(profile.xp)}</Badge></div></Card>
+  </div>;
+}
+
+// ─── MAIN APP ───
+function CozyFitApp(){
+  const[loading,setLoading]=useState(true);const[tab,setTab]=useState(SHARED.hasData?"meals":"home");
+  const[profile,setProfile]=useState(null);const[meals,setMeals]=useState({});
+  const[workouts,setWorkouts]=useState({});const[progress,setProgress]=useState([]);
+  const[customs,setCustoms]=useState([]);
+  const[popup,setPopup]=useState(null);const scrollRef=useRef(null);
+  const[sharedText]=useState(SHARED.hasData?[SHARED.text,SHARED.url,SHARED.title].filter(Boolean).join("\n"):"");
+
+  useEffect(()=>{
+    setProfile(ld(KS.pro,null));setMeals(ld(KS.meals,{}));setWorkouts(ld(KS.work,{}));
+    setProgress(ld(KS.prog,[]));setCustoms(ld(KS.cust,[]));setLoading(false);
+  },[]);
+  useEffect(()=>{if(scrollRef.current)scrollRef.current.scrollTop=0},[tab]);
+  const addXP=useCallback(amt=>{setProfile(p=>{const up={...p,xp:(p.xp||0)+amt};sv(KS.pro,up);return up;});
+    setPopup(`+${amt} XP ✨`);setTimeout(()=>setPopup(null),1500);},[]);
+  const setup=p=>{sv(KS.pro,p);setProfile(p);};
+
+  if(loading)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",
+    minHeight:"100vh",background:T.cream,flexDirection:"column",gap:12}}>
+    <span style={{fontSize:"36px",animation:"pulse 1.2s ease-in-out infinite"}}>🌸</span>
+    <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid}}>Loading...</p></div>;
+  if(!profile)return <Onboarding onDone={setup}/>;
+  return <div style={{background:T.cream,minHeight:"100vh",maxHeight:"100vh",color:T.brown,
+    maxWidth:480,margin:"0 auto",display:"flex",flexDirection:"column",position:"relative",
+    overflow:"hidden",touchAction:"manipulation",fontFamily:"'Quicksand'"}}>
+    {popup&&<div style={{position:"fixed",top:70,left:"50%",transform:"translateX(-50%)",
+      fontFamily:"'Fredoka'",fontSize:"18px",color:T.gold,fontWeight:700,
+      animation:"xpFloat 1.5s forwards",zIndex:999,pointerEvents:"none"}}>{popup}</div>}
+    <div ref={scrollRef} style={{flex:1,padding:"16px 16px 8px",overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch"}}>
+      {tab==="home"&&<Home profile={profile} meals={meals} workouts={workouts} progress={progress} setTab={setTab}/>}
+      {tab==="meals"&&<MealsPage meals={meals} setMeals={setMeals} profile={profile} addXP={addXP} sharedText={sharedText}/>}
+      {tab==="train"&&<TrainPage workouts={workouts} setWorkouts={setWorkouts} customs={customs} setCustoms={setCustoms} addXP={addXP} profile={profile}/>}
+      {tab==="progress"&&<ProgressPage progress={progress} setProgress={setProgress} addXP={addXP}/>}
+      {tab==="settings"&&<SettingsPage profile={profile} setProfile={setProfile} setTab={setTab}/>}
+    </div>
+    <TabBar tab={tab} setTab={setTab}/>
+  </div>;
+}
+
+ReactDOM.render(<CozyFitApp/>,document.getElementById("root"));
+
+// Register Service Worker
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").then(r=>console.log("SW registered",r.scope)).catch(e=>console.error("SW failed",e));
+}
+</script>
+</body>
+</html>
