@@ -1,9 +1,8 @@
-const CACHE_NAME = 'cozy-fit-v1';
-const ASSETS = ['/', '/index.html', '/manifest.json'];
+const CACHE_NAME = 'cozy-fit-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(['./', './index.html', './manifest.json']))
   );
   self.skipWaiting();
 });
@@ -20,17 +19,17 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // Handle share target — redirect /share to / with query params preserved
-  if (url.pathname === '/share') {
+  // Handle share target
+  if (url.pathname.endsWith('/share')) {
     const params = url.searchParams.toString();
-    e.respondWith(Response.redirect(`/?${params}&shared=1`, 303));
+    const base = url.pathname.replace('/share', '/');
+    e.respondWith(Response.redirect(`${base}?${params}&shared=1`, 303));
     return;
   }
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
       return cached || fetch(e.request).then((response) => {
-        // Cache successful GET requests
         if (e.request.method === 'GET' && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
