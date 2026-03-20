@@ -1,705 +1,576 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<meta name="theme-color" content="#D4725C"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="apple-mobile-web-app-title" content="Cozy Fit"/>
-<link rel="manifest" href="./manifest.json"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🌸</text></svg>"/>
-<title>Cozy Fit</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vince Tomlinson - Creative Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body,#root{height:100%;overscroll-behavior:none}
-body{font-family:'Quicksand',sans-serif;background:#FFF8F0;color:#4A3728}
-.cozy-input:focus{border-color:#D4725C !important}
-.card-hover:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(74,55,40,0.12)}
-input::placeholder,textarea::placeholder{color:#C8B9AB}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:#FFF8F0}
-::-webkit-scrollbar-thumb{background:#C8B9AB;border-radius:4px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-@keyframes xpFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(1.2)}}
-textarea{font-family:'Quicksand',sans-serif;resize:vertical}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020A12;--blue:#00C2FF;--blue2:#0087CC;--purple:#9F6FFF;--ink:#D6EEF8;--muted:#6FA8C4;--muted2:#4E8BA8;--b1:rgba(0,194,255,0.18);--b2:rgba(0,194,255,0.08);--glow:0 0 18px rgba(0,194,255,0.35);--mono:'Share Tech Mono',monospace;--head:'Rajdhani',sans-serif}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--head);cursor:none}
+body::before{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 4px)}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,194,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,194,255,.03) 1px,transparent 1px);background-size:60px 60px}
+#cur{position:fixed;width:8px;height:8px;background:var(--blue);border-radius:1px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 10px var(--blue),0 0 20px rgba(0,194,255,.5);left:-100px;top:-100px}
+#ring{position:fixed;width:32px;height:32px;border:1px solid rgba(0,194,255,.5);border-radius:2px;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) rotate(45deg);transition:width .35s cubic-bezier(.16,1,.3,1),height .35s cubic-bezier(.16,1,.3,1),border-color .3s;left:-100px;top:-100px}
+body.hov #ring{width:52px;height:52px;border-color:rgba(0,194,255,.8)}
+body.hov #cur{transform:translate(-50%,-50%) rotate(45deg) scale(0.4)}
+#wipe{position:fixed;inset:0;z-index:7000;pointer-events:none;display:flex;flex-direction:column}
+.wb{flex:1;background:var(--bg);transform:scaleY(0)}
+#nav{position:fixed;inset:0 0 auto;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:24px 64px;background:linear-gradient(to bottom,rgba(2,10,18,.98),transparent);border-bottom:1px solid rgba(0,194,255,.06)}
+.nlogo{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-decoration:none;color:var(--blue);text-shadow:0 0 12px rgba(0,194,255,.7);display:flex;align-items:center;gap:8px;cursor:none}
+.npre{color:var(--muted)}.nbadge{padding:2px 8px;border:1px solid rgba(0,194,255,.4);font-size:9px;color:var(--blue);letter-spacing:.1em}
+.nlinks{display:flex;gap:28px;list-style:none}
+.nlinks a{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--ink);text-shadow:0 0 8px rgba(0,194,255,.5);transition:color .25s,text-shadow .25s;cursor:none;position:relative}
+.nlinks a::before{content:'// ';color:var(--muted)}
+.nlinks a:hover,.nlinks a.on{color:#fff;text-shadow:0 0 14px rgba(0,194,255,.9),0 0 28px rgba(0,194,255,.4)}
+.nlinks a.on::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--blue);box-shadow:0 0 6px var(--blue)}
+.pg{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;z-index:1;display:none}
+.pg.on{display:block}
+.pg::-webkit-scrollbar{width:3px}.pg::-webkit-scrollbar-thumb{background:var(--muted2)}
+.panel{position:relative;border:1px solid var(--b1);background:linear-gradient(135deg,rgba(0,194,255,.04) 0%,transparent 60%)}
+.panel::before,.panel::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--blue);border-style:solid}
+.panel::before{top:-1px;left:-1px;border-width:2px 0 0 2px}.panel::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.panel.tr::before{top:-1px;right:-1px;left:auto;border-width:2px 2px 0 0}.panel.bl::after{bottom:-1px;left:-1px;right:auto;border-width:0 0 2px 2px}
+.sl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--blue);display:flex;align-items:center;gap:12px;margin-bottom:40px}
+.sl::before{content:'';width:20px;height:1px;background:var(--blue);box-shadow:0 0 6px var(--blue)}
+.dim{color:var(--muted)}
+.sec{padding:100px 64px;position:relative;z-index:1}
+.hc{position:absolute;width:80px;height:80px;border-color:rgba(0,194,255,.3);border-style:solid;pointer-events:none}
+.htl{top:100px;left:40px;border-width:2px 0 0 2px}.htr{top:100px;right:40px;border-width:2px 2px 0 0}
+.hbl{bottom:80px;left:40px;border-width:0 0 2px 2px}.hbr{bottom:80px;right:40px;border-width:0 2px 2px 0}
+.hcoord{position:absolute;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.12em;pointer-events:none}
+.hctl{top:110px;left:130px}.hctr{top:110px;right:130px}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.rev.in{opacity:1;transform:none}.d1{transition-delay:.12s}.d2{transition-delay:.24s}
+/* PROJECT MODAL */
+#proj-modal{position:fixed;inset:0;z-index:8000;background:rgba(2,10,18,.97);overflow-y:auto;overflow-x:hidden;opacity:0;pointer-events:none;transition:opacity .4s ease}
+#proj-modal.on{opacity:1;pointer-events:all}
+#proj-modal::-webkit-scrollbar{width:3px}#proj-modal::-webkit-scrollbar-thumb{background:var(--muted2)}
+.pm-inner{max-width:1100px;margin:0 auto;padding:80px 64px}
+.pm-close{position:fixed;top:28px;right:40px;z-index:8100;font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--muted);cursor:none;display:flex;align-items:center;gap:10px;transition:color .25s}
+.pm-close:hover{color:var(--blue)}.pm-close::before{content:'';width:20px;height:1px;background:currentColor}
+.pm-cat{font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--blue);margin-bottom:16px}
+.pm-title{font-family:var(--head);font-size:clamp(36px,5vw,72px);font-weight:700;color:var(--ink);line-height:.92;margin-bottom:24px}
+.pm-desc{font-family:var(--head);font-size:16px;font-weight:300;color:rgba(214,238,248,.8);line-height:1.9;max-width:700px;margin-bottom:56px}
+.pm-divider{width:100%;height:1px;background:linear-gradient(90deg,var(--blue),transparent 60%);opacity:.25;margin-bottom:56px}
+.pm-gallery{display:flex;flex-direction:column;gap:64px}
+.pm-item{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.pm-item:nth-child(even){direction:rtl}.pm-item:nth-child(even)>*{direction:ltr}
+.pm-img-wrap{position:relative;overflow:hidden;border:1px solid var(--b1)}
+.pm-img-wrap::before{content:'';position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--blue);border-left:2px solid var(--blue);z-index:1}
+.pm-img-wrap::after{content:'';position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--blue);border-right:2px solid var(--blue);z-index:1}
+.pm-img{width:100%;display:block;object-fit:contain;background:#000}
+.pm-img-num{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--muted2);margin-bottom:12px}
+.pm-img-title{font-family:var(--head);font-size:28px;font-weight:600;color:var(--ink);margin-bottom:16px;line-height:1.1}
+.pm-img-desc{font-family:var(--head);font-size:15px;font-weight:300;color:rgba(214,238,248,.75);line-height:1.85}
+.pm-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}
+.pm-tag{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted);padding:3px 10px;border:1px solid var(--b2)}
+.pm-watch{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--blue);text-decoration:none;padding:10px 20px;border:1px solid rgba(0,194,255,.4);background:rgba(0,194,255,.05);transition:background .3s,box-shadow .3s}
+.pm-watch:hover{background:rgba(0,194,255,.12);box-shadow:0 0 14px rgba(0,194,255,.3)}
+.pm-placeholder{aspect-ratio:16/9;background:linear-gradient(135deg,rgba(0,194,255,.06),transparent);border:1px dashed rgba(0,194,255,.2);display:flex;align-items:center;justify-content:center}
+.pm-placeholder span{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--muted2)}
+@media(max-width:900px){.pm-inner{padding:80px 28px 60px}.pm-item{grid-template-columns:1fr}.pm-item:nth-child(even){direction:ltr}}
+/* HOME */
+.hero{min-height:100vh;display:grid;grid-template-rows:1fr auto;padding:0 64px;position:relative;overflow:hidden}
+.hero-in{display:flex;flex-direction:column;justify-content:center;padding-top:120px}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;margin-bottom:24px;display:flex;align-items:center;gap:16px;opacity:0;transition:opacity .7s}
+.eyebrow.in{opacity:1}
+.ping{width:6px;height:6px;background:var(--blue);border-radius:50%;box-shadow:0 0 8px var(--blue);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hname{font-family:var(--head);font-size:clamp(48px,9vw,140px);font-weight:700;line-height:.9;letter-spacing:-.01em;margin-bottom:36px;position:relative}
+.nline{display:block;white-space:nowrap}
+#pipe{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--blue);box-shadow:0 0 12px var(--blue),0 0 28px rgba(0,194,255,.5);left:0;opacity:0;pointer-events:none;z-index:10}
+.ch{display:inline-block;position:relative;z-index:1;opacity:0;transform:translateX(28px);transition:opacity .18s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.ch.ink{color:var(--ink)}.ch.blue{color:var(--blue);text-shadow:0 0 40px rgba(0,194,255,.5)}
+.ch.in{opacity:1;transform:translateX(0)}.ch.lit{color:var(--blue);text-shadow:0 0 20px rgba(0,194,255,.8)}
+@keyframes glitch{0%,94%,100%{clip-path:none;transform:translateX(0)}95%{clip-path:inset(20% 0 60% 0);transform:translateX(-4px)}97%{clip-path:inset(50% 0 20% 0);transform:translateX(4px)}}
+.glitch{animation:glitch 8s ease infinite}
+.hrole{display:inline-flex;align-items:center;gap:16px;margin-bottom:32px;opacity:0;transition:opacity .7s}.hrole.in{opacity:1}
+.rbox{padding:6px 20px;border:1px solid var(--purple);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--purple);box-shadow:0 0 14px rgba(159,111,255,.3);background:rgba(159,111,255,.06)}
+.rmeta{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.14em}
+.htag{font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.85;max-width:520px;letter-spacing:.04em;opacity:0;transition:opacity .7s .15s}
+.htag.in{opacity:1}.htag .sub{color:var(--muted2);display:block;margin-top:6px}
+.hbot{display:flex;justify-content:space-between;align-items:flex-end;padding:28px 0;border-top:1px solid var(--b2);opacity:0;transition:opacity .7s .3s}
+.hbot.in{opacity:1}
+.slbl2{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--muted);display:flex;justify-content:space-between;width:180px}
+.strk{width:180px;height:3px;background:rgba(0,194,255,.12);margin:6px 0}
+.sfil{height:100%;width:80%;background:linear-gradient(90deg,var(--blue2),var(--blue));box-shadow:0 0 8px rgba(0,194,255,.6)}
+.hscroll{font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--muted);display:flex;align-items:center;gap:12px}
+.scline{width:44px;height:1px;background:rgba(0,194,255,.2);position:relative;overflow:hidden}
+.scline::after{content:'';position:absolute;inset:0 100% 0 -100%;background:var(--blue);box-shadow:0 0 6px var(--blue);animation:scananim 2.4s ease infinite}
+@keyframes scananim{0%{left:-100%;right:200%}45%{left:100%;right:-100%}100%{left:100%;right:-100%}}
+/* WORK */
+.wtabs{display:flex;gap:3px;margin-bottom:3px}
+.wtab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:10px 24px;border:1px solid var(--b2);color:var(--muted);cursor:none;background:rgba(0,194,255,.02);transition:all .25s}
+.wtab:hover{color:var(--ink);border-color:rgba(0,194,255,.3)}
+.wtab.on{color:var(--blue);border-color:var(--blue);background:rgba(0,194,255,.06);box-shadow:0 0 12px rgba(0,194,255,.1)}
+.wcat-panel{display:none}.wcat-panel.on{display:block}
+.wgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
+.wgrid.hl .wi:first-child{grid-column:span 2}
+.wgrid.hl .wi:first-child .wthumb{aspect-ratio:16/7}
+.wi{position:relative;overflow:hidden;cursor:none}
+.wthumb{aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.wbg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s cubic-bezier(.16,1,.3,1)}.wi:hover .wbg{transform:scale(1.06)}
+.bg-digi{background-image:url('images/ninja-light.png');background-size:cover;background-position:center}
+.bg-infographic{background:url('images/infographic-hmrc.jpg') center/cover no-repeat}
+.bg-logo{background:url('images/logo-egoproblems.png') center/cover no-repeat}
+.bg-mraw{background:url('https://img.youtube.com/vi/79881Y-wWZ4/maxresdefault.jpg') center/cover no-repeat}
+.bg-ren{background:url('https://img.youtube.com/vi/fft1D-Wd4uE/maxresdefault.jpg') center/cover no-repeat}
+.bg-flex{background:url('https://img.youtube.com/vi/vjpkkDWBAQQ/maxresdefault.jpg') center/cover no-repeat}
+.bg-esportsvid{background:url('https://img.youtube.com/vi/aWPZUOY9Q3I/maxresdefault.jpg') center/cover no-repeat}
+.bg-podcast{background:url('https://img.youtube.com/vi/g96rDo0epWQ/maxresdefault.jpg') center/cover no-repeat}
+.bg-yasuke{background:radial-gradient(ellipse at 50% 50%,rgba(180,100,0,.4),rgba(0,0,0,.95)),linear-gradient(135deg,#0a0500,#020A12)}
+.bg-daylife{background:radial-gradient(ellipse at 40% 60%,rgba(220,200,0,.35),rgba(2,10,18,.95)),linear-gradient(135deg,#0a0900,#020A12)}
+.bg-blm{background:radial-gradient(ellipse at 50% 70%,rgba(40,40,40,.8),rgba(0,0,0,.98)),linear-gradient(135deg,#050505,#020A12)}
+.wtag{position:absolute;top:20px;left:20px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--blue);padding:4px 12px;border:1px solid rgba(0,194,255,.3);background:rgba(2,10,18,.7);z-index:2}
+.wov{position:absolute;inset:0;background:linear-gradient(to top,rgba(2,10,18,.97),rgba(2,10,18,.5) 55%,transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:36px;opacity:0;border:1px solid transparent;transition:opacity .45s,border-color .45s}
+.wi:hover .wov{opacity:1;border-color:var(--b1)}
+.wcat-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--blue);margin-bottom:8px;transform:translateY(10px);transition:transform .45s cubic-bezier(.16,1,.3,1)}.wi:hover .wcat-lbl{transform:none}
+.wtit{font-family:var(--head);font-size:clamp(20px,2.4vw,36px);font-weight:600;color:var(--ink);line-height:1.1;transform:translateY(12px);transition:transform .45s cubic-bezier(.16,1,.3,1) .04s}.wi:hover .wtit{transform:none}
+.wview{margin-top:12px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--blue);transform:translateY(10px);transition:transform .45s cubic-bezier(.16,1,.3,1) .08s}.wi:hover .wview{transform:none}
+/* ABOUT */
+.agrid{display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start}
+.pcard{padding:32px;margin-bottom:28px}
+.chead{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--blue);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--b2)}
+.pname{font-family:var(--head);font-size:38px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:6px}
+.prole{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--purple)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.sbox{padding:14px 16px;background:rgba(0,194,255,.04);border:1px solid var(--b2)}
+.sblbl{font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--muted);margin-bottom:6px}
+.sbval{font-family:var(--head);font-size:26px;font-weight:600;color:var(--blue);line-height:1}
+.sbval em{font-style:normal;font-size:16px;color:var(--muted)}
+.bio p{font-family:var(--head);font-size:16px;font-weight:300;line-height:1.9;color:rgba(214,238,248,.85);margin-bottom:18px}
+.bio p strong{color:var(--ink);font-weight:500}
+.divl{width:100%;height:1px;background:linear-gradient(90deg,var(--blue),transparent 60%);opacity:.3;margin:36px 0}
+.skrow{margin-bottom:20px}
+.skhd{display:flex;justify-content:space-between;margin-bottom:8px}
+.sknm{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink);text-transform:uppercase}
+.sklv{font-family:var(--mono);font-size:10px;color:var(--blue)}
+.sktrk{width:100%;height:4px;background:rgba(0,194,255,.08);position:relative}
+.skfil{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--blue2),var(--blue));box-shadow:0 0 8px rgba(0,194,255,.5);width:0;transition:width 1.6s cubic-bezier(.16,1,.3,1);clip-path:polygon(0 0,calc(100% - 5px) 0,100% 50%,calc(100% - 5px) 100%,0 100%)}
+.trow{display:flex;flex-wrap:wrap;gap:8px}
+.stag{padding:5px 14px;border:1px solid rgba(0,194,255,.2);font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;background:rgba(0,194,255,.03);transition:border-color .25s,color .25s;cursor:default}
+.stag:hover{border-color:rgba(0,194,255,.5);color:var(--blue)}
+/* SERVICES */
+.svgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.svgrid-b{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:3px;max-width:66.66%}
+.svc{padding:40px 32px;border:1px solid var(--b2);background:linear-gradient(135deg,rgba(0,194,255,.03),transparent 70%);position:relative;transition:border-color .35s,background .35s}
+.svc:hover{border-color:rgba(0,194,255,.35);background:linear-gradient(135deg,rgba(0,194,255,.07),transparent 70%)}
+.svc::before{content:'';position:absolute;top:-1px;left:-1px;width:20px;height:20px;border-top:2px solid var(--blue);border-left:2px solid var(--blue);transition:width .4s,height .4s}
+.svc:hover::before{width:40px;height:40px}
+.svnum{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--muted);margin-bottom:24px}
+.svico{font-size:28px;margin-bottom:20px;color:var(--blue)}
+.svtit{font-family:var(--head);font-size:24px;font-weight:600;color:var(--ink);margin-bottom:16px;line-height:1.1}
+.svdsc{font-family:var(--head);font-size:14px;font-weight:300;color:rgba(214,238,248,.75);line-height:1.8;margin-bottom:24px}
+.svlst{list-style:none}
+.svlst li{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--b2);display:flex;align-items:center;gap:8px}
+.svlst li::before{content:'//';color:var(--muted2)}
+/* EXPERIENCE */
+.expgrid{display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start}
+.tline{position:relative;padding-left:40px}
+.tline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--blue),rgba(0,194,255,.1));box-shadow:0 0 8px rgba(0,194,255,.3)}
+.ti{position:relative;margin-bottom:56px}
+.tidot{position:absolute;left:-47px;top:6px;width:14px;height:14px;border:1px solid var(--blue);background:var(--bg);transform:rotate(45deg);box-shadow:0 0 12px rgba(0,194,255,.4)}
+.tidot::after{content:'';position:absolute;inset:3px;background:var(--blue);box-shadow:0 0 6px var(--blue)}
+.tidate{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--blue);margin-bottom:10px}
+.tirole{font-family:var(--head);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.tico{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--purple);margin-bottom:14px}
+.tidsc{font-family:var(--head);font-size:15px;font-weight:300;color:rgba(214,238,248,.75);line-height:1.8;max-width:600px}
+.titags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.titag{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted);padding:3px 10px;border:1px solid var(--b2)}
+.ti-con{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ti-con::before{content:'';width:8px;height:8px;border:1px solid var(--purple);transform:rotate(45deg);flex-shrink:0}
+/* CONTACT */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}
+.chtit{font-family:var(--head);font-size:clamp(44px,7vw,96px);font-weight:700;line-height:.92}
+.chtit .hl{color:var(--blue);text-shadow:0 0 30px rgba(0,194,255,.4)}
+.cpanel{padding:32px}
+.ceml a{color:var(--blue);text-decoration:none;font-family:var(--mono);font-size:13px;letter-spacing:.04em;transition:text-shadow .25s}
+.ceml a:hover{text-shadow:0 0 12px rgba(0,194,255,.7)}
+.cnote{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:4px}
+.cbtn{display:inline-flex;align-items:center;gap:14px;padding:16px 40px;border:1px solid rgba(0,194,255,.4);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:var(--blue);background:rgba(0,194,255,.05);transition:background .35s,border-color .35s,box-shadow .35s;cursor:none;margin-top:24px}
+.cbtn:hover{background:rgba(0,194,255,.12);border-color:var(--blue);box-shadow:var(--glow)}
+.carr{transition:transform .35s}.cbtn:hover .carr{transform:translate(4px,-4px)}
+.srow{display:flex;gap:24px;margin-top:20px}
+.srow a{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-decoration:none;color:var(--muted);transition:color .25s;cursor:none}
+.srow a::before{content:'// ';color:var(--muted2)}.srow a:hover{color:var(--blue)}
+.pgft{padding:28px 64px;border-top:1px solid var(--b2);display:flex;justify-content:space-between;align-items:center}
+.pgft p{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--muted2)}.ver{color:var(--blue)}
+@media(max-width:900px){
+  #nav{padding:20px 28px}.nlinks{display:none}
+  .hero,.sec{padding-left:28px;padding-right:28px}
+  .hc,.hcoord{display:none}
+  .wgrid{grid-template-columns:1fr!important}.wgrid .wi:first-child{grid-column:span 1!important}.wgrid .wi:first-child .wthumb{aspect-ratio:4/3!important}
+  .agrid,.expgrid,.cgrid{grid-template-columns:1fr;gap:48px}
+  .svgrid,.svgrid-b{grid-template-columns:1fr;max-width:100%}
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+  .pgft{flex-direction:column;gap:8px;padding:20px 28px}
+  .wtabs{flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script type="text/babel" data-type="module">
-const{useState,useEffect,useCallback,useRef}=React;
+<canvas id="bgc" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+<div id="cur"></div><div id="ring"></div>
+<div id="wipe"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
 
-// ─── DESIGN TOKENS ───
-const T={cream:"#FFF8F0",warmWhite:"#FFFCF7",card:"#FFFFFF",
-  terra:"#D4725C",terraLight:"#E8947F",terraSoft:"#F5D4CC",
-  rose:"#C98B8B",roseLight:"#E4B8B8",roseSoft:"#F5E0E0",
-  sage:"#7EA07A",sageLight:"#A3C49F",sageSoft:"#DFF0DD",
-  gold:"#C9A84C",goldLight:"#E0C76E",goldSoft:"#FFF3D4",
-  sky:"#7BAAC4",skyLight:"#A3C8DD",skySoft:"#DBF0FF",
-  brown:"#4A3728",brownMid:"#7A6455",brownLight:"#A89585",brownPale:"#C8B9AB",
-  shadow:"0 2px 12px rgba(74,55,40,0.08)",shadowLift:"0 6px 24px rgba(74,55,40,0.12)",
-  r:"16px",rSm:"10px",rPill:"50px"};
+<!-- PROJECT MODAL -->
+<div id="proj-modal">
+  <div class="pm-close" id="pm-close">CLOSE</div>
+  <div class="pm-inner" id="pm-inner"></div>
+</div>
 
-// ─── STORAGE (localStorage for PWA) ───
-const KS={pro:"cf-pro",meals:"cf-meals",work:"cf-work",prog:"cf-prog",cust:"cf-cust",photos:"cf-photos",plans:"cf-plans"};
-const td=()=>new Date().toISOString().split("T")[0];
-const ld=(k,f)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch{return f}};
-const sv=(k,d)=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){console.error(e)}};
-const lvl=x=>Math.floor((x||0)/150)+1;
-const xpPct=x=>(((x||0)%150)/150)*100;
-const xpNeed=x=>150-((x||0)%150);
+<nav id="nav">
+  <a href="#" class="nlogo" data-page="home"><span class="npre">PORTFOLIO://</span>V.TOMLINSON<span class="nbadge">MANCHESTER</span></a>
+  <ul class="nlinks">
+    <li><a href="#" data-page="work">Work</a></li>
+    <li><a href="#" data-page="about">About</a></li>
+    <li><a href="#" data-page="services">Services</a></li>
+    <li><a href="#" data-page="experience">Experience</a></li>
+    <li><a href="#" data-page="contact">Contact</a></li>
+  </ul>
+</nav>
 
-// ─── SHARE TARGET ───
-function getSharedData(){
-  const p=new URLSearchParams(window.location.search);
-  if(p.get("shared")==="1"){
-    const text=p.get("text")||"";const url=p.get("url")||"";const title=p.get("title")||"";
-    window.history.replaceState({},"",window.location.pathname);
-    return{text,url,title,hasData:!!(text||url)};
-  }
-  return{text:"",url:"",title:"",hasData:false};
-}
-const SHARED=getSharedData();
-
-// ─── ENCOURAGEMENT ───
-const CHEERS=["You're doing amazing! 💕","Every rep counts, queen! 👑","Stronger every single day 💪",
-  "Your future self is thanking you! 🌟","Consistency beats perfection 🌸","Look at you GO! 🔥",
-  "Small steps, big results 🌿","You showed up — that's everything ✨","Be proud of yourself today 💖",
-  "Building a better you, one day at a time 🦋","Rest days are growth days too 🌙",
-  "Progress isn't always linear — keep going! 🌈","Your body is incredible — fuel it well 🍃",
-  "Discipline is self-love in action 💕","You've got this, no question 💪",
-  "Today's effort is tomorrow's strength 🌻","Strong is beautiful 💖"];
-const cheer=()=>CHEERS[Math.floor(Math.random()*CHEERS.length)];
-
-// ─── EXERCISES ───
-const EXERCISES={"Chest":{emoji:"🫁",color:T.terra,items:["Barbell Bench Press","Incline Bench Press","Decline Bench Press","Dumbbell Bench Press","Incline Dumbbell Press","Dumbbell Flyes","Incline Flyes","Cable Flyes","Cable Crossover","Pec Deck Machine","Push-ups","Wide Push-ups","Diamond Push-ups","Decline Push-ups","Chest Dips","Landmine Press","Svend Press","Floor Press","Smith Machine Bench"]},"Back":{emoji:"🔙",color:"#6B8E6B",items:["Pull-ups","Chin-ups","Lat Pulldown","Wide-Grip Pulldown","Close-Grip Pulldown","Barbell Row","Pendlay Row","Dumbbell Row","Single-Arm DB Row","Cable Row","Seated Cable Row","T-Bar Row","Face Pulls","Deadlift","Rack Pull","Hyperextensions","Reverse Flyes","Inverted Row","Meadows Row","Straight-Arm Pulldown","Chest-Supported Row","Seal Row","Kroc Row","Pullovers"]},"Shoulders":{emoji:"🏔️",color:T.sky,items:["Overhead Press","Dumbbell Shoulder Press","Arnold Press","Seated DB Press","Push Press","Lateral Raises","Cable Lateral Raise","Front Raises","Rear Delt Flyes","Reverse Pec Deck","Upright Row","Barbell Shrugs","Dumbbell Shrugs","Pike Push-ups","Handstand Push-ups","Lu Raises","Bus Drivers","Bradford Press","Plate Front Raise","Machine Shoulder Press","Landmine Lateral Raise"]},"Biceps":{emoji:"💪",color:T.rose,items:["Barbell Curl","EZ-Bar Curl","Dumbbell Curl","Alternating DB Curl","Hammer Curl","Preacher Curl","Concentration Curl","Cable Curl","Incline DB Curl","Spider Curl","Reverse Curl","Zottman Curl","21s Curl","Rope Hammer Curl","Cross-Body Hammer Curl","Drag Curl","Bayesian Curl"]},"Triceps":{emoji:"🔱",color:"#9B7EA0",items:["Tricep Pushdown","Rope Pushdown","Overhead Tricep Extension","Cable Overhead Extension","Skull Crushers","Close-Grip Bench Press","Tricep Dips","Bench Dips","Kickbacks","JM Press","Diamond Push-ups","Tate Press","French Press","Single-Arm Pushdown"]},"Quads":{emoji:"🦵",color:T.sage,items:["Barbell Back Squat","Front Squat","Goblet Squat","Leg Press","Hack Squat","Leg Extension","Lunges","Walking Lunges","Reverse Lunges","Bulgarian Split Squat","Step-ups","Box Squat","Sissy Squat","Wall Sit","Pistol Squat","Smith Machine Squat","Zercher Squat","Landmine Squat","Safety Bar Squat","Belt Squat","Cyclist Squat"]},"Hamstrings":{emoji:"🦿",color:"#A08060",items:["Romanian Deadlift","Stiff-Leg Deadlift","Single-Leg RDL","Lying Leg Curl","Seated Leg Curl","Nordic Curl","Good Morning","Glute-Ham Raise","Sliding Leg Curl","Kettlebell Swing","Cable Pull-Through","Sumo Deadlift","Deficit Deadlift","Trap Bar Deadlift"]},"Glutes":{emoji:"🍑",color:"#D4886B",items:["Hip Thrust","Barbell Hip Thrust","Single-Leg Hip Thrust","Glute Bridge","Banded Glute Bridge","Cable Kickback","Donkey Kicks","Fire Hydrants","Frog Pumps","Banded Walks","Clamshells","Hip Abduction Machine","Cable Hip Abduction","Sumo Deadlift","Curtsy Lunge","Glute-Focused Back Extension","B-Stance Hip Thrust","Kas Glute Bridge"]},"Calves":{emoji:"🦶",color:"#8B9DAF",items:["Standing Calf Raise","Seated Calf Raise","Single-Leg Calf Raise","Donkey Calf Raise","Leg Press Calf Raise","Smith Machine Calf Raise","Tibialis Raise","Jump Rope Calf Work"]},"Core & Abs":{emoji:"🔥",color:T.gold,items:["Plank","Side Plank","Dead Bug","Russian Twist","Cable Crunch","Hanging Leg Raise","Hanging Knee Raise","Ab Wheel Rollout","Mountain Climbers","Bird Dog","Woodchop","Cable Woodchop","Pallof Press","V-ups","Bicycle Crunch","Toe Touches","Flutter Kicks","Dragon Flag","L-Sit Hold","Hollow Hold","Decline Sit-ups","Reverse Crunch","Copenhagen Plank","Suitcase Carry","Farmer's Walk (Core)","Turkish Get-up","Leg Raise","Scissor Kicks","Heel Taps","Bear Crawl"]},"Cardio":{emoji:"🫀",color:"#CC6666",items:["Running","Jogging","Sprints","Incline Walking","Treadmill HIIT","Cycling","Stationary Bike","Spin Class","Swimming","Rowing Machine","Stair Climber","Elliptical","Jump Rope","Skipping","Boxing","Shadow Boxing","Battle Ropes","Burpees","Jumping Jacks","High Knees","Butt Kicks","Assault Bike","Hiking","Dance Cardio","Kickboxing","Sled Push","Sled Pull"]},"Full Body":{emoji:"⚡",color:"#7B68AE",items:["Clean & Press","Power Clean","Snatch","Thrusters","Turkish Get-up","Man Makers","Farmer's Walk","Sandbag Carry","Med Ball Slam","Wall Balls","Box Jumps","Broad Jumps","Sled Push","Prowler Push","Tire Flips","Renegade Row","Devil Press","Dumbbell Complex","Barbell Complex","Bear Complex","Kettlebell Clean","Kettlebell Snatch"]},"Flexibility & Mobility":{emoji:"🧘",color:"#8BAFAF",items:["Yoga Flow","Vinyasa Sequence","Static Stretching","Dynamic Stretching","Foam Rolling","Hip Flexor Stretch","90/90 Stretch","Pigeon Pose","Frog Stretch","Hamstring Stretch","Quad Stretch","Calf Stretch","Shoulder Dislocates","Cat-Cow","Child's Pose","Downward Dog","Cobra Stretch","Thread the Needle","Thoracic Rotation","World's Greatest Stretch","Couch Stretch","Jefferson Curl","Banded Shoulder Stretch","Lacrosse Ball Work","Wrist Circles","Ankle Circles","Neck Stretches","Spinal Decompression Hang"]},"Pilates":{emoji:"🤸",color:"#C47DAF",items:["The Hundred","Roll Up","Single Leg Circle","Rolling Like a Ball","Single Leg Stretch","Double Leg Stretch","Spine Stretch Forward","Open Leg Rocker","Corkscrew","Saw","Swan Dive","Single Leg Kick","Double Leg Kick","Neck Pull","Scissors","Bicycle","Shoulder Bridge","Side Kick Series","Teaser","Swimming (Pilates)","Leg Pull Front","Leg Pull Back","Side Bend","Boomerang","Seal","Mermaid Stretch","Clam (Pilates)","Pilates Push-up","Reformer Footwork","Reformer Long Stretch","Reformer Elephant","Reformer Knee Stretch","Cadillac Roll Down","Spine Corrector","Pilates Ring Squeeze"]},"Barre":{emoji:"🩱",color:"#D4728B",items:["Plié Squats","Relevé","First Position Pulse","Second Position Hold","Barre Leg Lift","Arabesque Lift","Attitude Lift","Passé Balance","Curtsy Lunge Pulse","Barre Tricep Press","Parallel Thigh Work","Turned-Out Thigh Work","Pretzel","Barre Bicep Curl","Seat Work","Standing Seat Lift","Waterski","Wide Second Plié","Barre Core Fold","Chair Pose Pulse","Rond de Jambe","Tendu Series","Battement","Inner Thigh Squeeze","Barre Push-up"]},"Classes & Studio":{emoji:"🏠",color:"#7BA5C4",items:["Spin / Indoor Cycling","HIIT Class","CrossFit WOD","F45 Session","Bootcamp","Body Pump","Body Combat","Body Balance","Zumba","Aqua Aerobics","Step Aerobics","TRX Suspension Training","Functional Training Class","Circuit Training","Tabata Class","Hot Yoga","Yin Yoga","Power Yoga","Ashtanga Yoga","Bikram Yoga","Hatha Yoga","Aerial Yoga","Pole Fitness","Aerial Hoop","Gymnastics Class","Martial Arts Class","Muay Thai","Jiu Jitsu","Capoeira","Rock Climbing","Trampolining","Reformer Pilates Class","Mat Pilates Class","Barre Class","Dance Fitness","Ballet Fit","Stretch & Tone"]},"Dance & Movement":{emoji:"💃",color:"#D4A05C",items:["Zumba","Dance Cardio","Hip-Hop Dance","Contemporary Dance","Ballet Class","Salsa","Afrobeats Dance","K-Pop Dance","Bollywood Dance","Jazz Dance","Swing Dance","Bachata","Line Dancing","Dancehall","Capoeira","Belly Dance","Tap Dance","Burlesque Fitness","Reggaeton Fitness"]}};
-
-// ─── SHARED COMPONENTS ───
-function Card({children,style={},onClick,hover=false}){
-  return <div onClick={onClick} className={hover?"card-hover":""}
-    style={{background:T.card,borderRadius:T.r,padding:"18px 20px",boxShadow:T.shadow,
-    marginBottom:14,cursor:onClick?"pointer":"default",transition:"all 0.2s",
-    border:`1.5px solid ${T.terraSoft}`,...style}}>{children}</div>;
-}
-function Btn({children,onClick,color=T.terra,full=false,outline=false,small=false,disabled=false,style={}}){
-  return <button onClick={disabled?undefined:onClick} style={{
-    background:outline?"transparent":disabled?T.brownPale:color,
-    border:outline?`2px solid ${color}`:"none",color:outline?color:"#fff",
-    fontFamily:"'Fredoka'",fontSize:small?"13px":"15px",fontWeight:600,
-    padding:small?"8px 16px":"12px 24px",borderRadius:T.rPill,cursor:disabled?"default":"pointer",
-    width:full?"100%":"auto",transition:"all 0.15s",opacity:disabled?0.6:1,
-    boxShadow:outline||disabled?"none":`0 3px 12px ${color}33`,
-    WebkitTapHighlightColor:"transparent",...style}}>{children}</button>;
-}
-function Input({value,onChange,placeholder,type="text",style={}}){
-  return <input type={type} inputMode={type==="number"?"decimal":"text"}
-    value={value} onChange={onChange} placeholder={placeholder} className="cozy-input"
-    style={{background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
-    fontFamily:"'Quicksand'",fontSize:"15px",fontWeight:500,padding:"12px 16px",
-    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
-    WebkitAppearance:"none",transition:"border-color 0.2s",...style}}/>;
-}
-function TextArea({value,onChange,placeholder,rows=4,style={}}){
-  return <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows}
-    className="cozy-input"
-    style={{background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
-    fontFamily:"'Quicksand'",fontSize:"14px",fontWeight:500,padding:"12px 16px",
-    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
-    WebkitAppearance:"none",transition:"border-color 0.2s",lineHeight:1.5,...style}}/>;
-}
-function Select({value,onChange,options}){
-  return <select value={value} onChange={onChange} style={{
-    background:T.cream,border:`2px solid ${T.brownPale}`,color:T.brown,
-    fontFamily:"'Quicksand'",fontSize:"15px",fontWeight:500,padding:"12px 16px",
-    width:"100%",boxSizing:"border-box",outline:"none",borderRadius:T.rSm,
-    WebkitAppearance:"none",appearance:"none",
-    backgroundImage:"url(\"data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%237A6455' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E\")",
-    backgroundRepeat:"no-repeat",backgroundPosition:"right 14px center"}}>
-    {options.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
-  </select>;
-}
-function Badge({children,color=T.terra}){
-  return <span style={{display:"inline-flex",alignItems:"center",gap:4,
-    background:`${color}18`,color,fontFamily:"'Fredoka'",fontSize:"12px",
-    fontWeight:600,padding:"4px 10px",borderRadius:T.rPill}}>{children}</span>;
-}
-function Ring({pct,size=60,stroke=5,color=T.terra,children}){
-  const r=(size-stroke)/2,c=2*Math.PI*r,o=c-(pct/100)*c;
-  return <div style={{position:"relative",width:size,height:size}}>
-    <svg width={size} height={size} style={{transform:"rotate(-90deg)"}}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={`${color}22`} strokeWidth={stroke}/>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
-        strokeDasharray={c} strokeDashoffset={o} strokeLinecap="round" style={{transition:"stroke-dashoffset 0.6s"}}/>
-    </svg>
-    <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{children}</div>
-  </div>;
-}
-function Sparkle({size=16,color=T.gold,style={}}){
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style}>
-    <path d="M12 2L13.5 9L20 7L14.5 12L20 17L13.5 15L12 22L10.5 15L4 17L9.5 12L4 7L10.5 9L12 2Z" fill={color}/>
-  </svg>;
-}
-function CheerBanner(){const[msg]=useState(cheer);
-  return <div style={{background:`linear-gradient(135deg,${T.goldSoft},${T.terraSoft})`,
-    borderRadius:T.r,padding:"14px 18px",marginBottom:14,textAlign:"center",
-    border:`1.5px solid ${T.goldLight}`}}>
-    <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,fontWeight:500}}>{msg}</p></div>;
-}
-
-// ─── TAB BAR ───
-function TabBar({tab,setTab}){
-  const tabs=[{id:"home",icon:"🏡",l:"Home"},{id:"meals",icon:"🍽️",l:"Meals"},
-    {id:"train",icon:"💪",l:"Train"},{id:"progress",icon:"📈",l:"Progress"}];
-  return <div style={{display:"flex",background:T.card,borderTop:`1.5px solid ${T.terraSoft}`,
-    position:"sticky",bottom:0,zIndex:50,paddingBottom:"env(safe-area-inset-bottom,6px)",
-    boxShadow:"0 -2px 12px rgba(74,55,40,0.06)"}}>
-    {tabs.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{
-      flex:1,background:"none",border:"none",padding:"10px 0 8px",cursor:"pointer",
-      display:"flex",flexDirection:"column",alignItems:"center",gap:2,
-      WebkitTapHighlightColor:"transparent"}}>
-      <span style={{fontSize:"22px",filter:tab===t.id?"none":"grayscale(0.6) opacity(0.5)"}}>{t.icon}</span>
-      <span style={{fontFamily:"'Fredoka'",fontSize:"11px",fontWeight:tab===t.id?600:400,
-        color:tab===t.id?T.terra:T.brownLight}}>{t.l}</span>
-      {tab===t.id&&<div style={{width:20,height:3,borderRadius:2,background:T.terra,marginTop:1}}/>}
-    </button>)}
-  </div>;
-}
-
-// ─── ONBOARDING ───
-function Onboarding({onDone}){
-  const[step,setStep]=useState(0);
-  const[name,setName]=useState("");const[age,setAge]=useState("");
-  const[height,setHeight]=useState("");const[weight,setWeight]=useState("");
-  const[goalWeight,setGoalWeight]=useState("");
-  const[activity,setActivity]=useState("moderate");const[goal,setGoal]=useState("muscle");
-  const[plan,setPlan]=useState(null);const[loading,setLoading]=useState(false);
-  const actL={sedentary:"Sedentary",light:"Light (1-2 days/wk)",moderate:"Moderate (3-5 days/wk)",active:"Very Active (6-7 days/wk)",athlete:"Athlete (2x daily)"};
-  const goalL={muscle:"Build Muscle & Tone",lose:"Lose Fat & Lean Out",maintain:"Maintain & Stay Healthy",recomp:"Body Recomposition"};
-  const genPlan=async()=>{setLoading(true);
-    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,
-        messages:[{role:"user",content:`Fitness coach. User: ${name}, Age ${age}, ${height}cm, current weight ${weight}kg, goal weight ${goalWeight||"not specified"}kg, ${actL[activity]}, Goal: ${goalL[goal]}. Calculate BMR (Mifflin-St Jeor female), TDEE, recommend calories, protein(g), training days/week. Factor in their goal weight when setting calorie targets (deficit if goal weight is lower, surplus if higher). Warm 2-sentence encouragement. ONLY valid JSON: {"calories":number,"protein":number,"trainingDays":number,"message":"...","bmr":number,"tdee":number}`}]})});
-      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
-      setPlan(JSON.parse(txt.replace(/```json|```/g,"").trim()));
-    }catch{const w=parseFloat(weight)||60,h=parseFloat(height)||165,a=parseInt(age)||25,gw=parseFloat(goalWeight)||0;
-      const bmr=Math.round(10*w+6.25*h-5*a-161);const mult={sedentary:1.2,light:1.375,moderate:1.55,active:1.725,athlete:1.9};
-      const tdee=Math.round(bmr*(mult[activity]||1.55));
-      const autoAdj=gw>0?(gw<w?-400:gw>w?250:0):0;
-      const adj={muscle:250,lose:-400,maintain:0,recomp:0};
-      const calAdj=goal==="muscle"||goal==="lose"?adj[goal]:autoAdj;
-      setPlan({calories:Math.round(tdee+calAdj),protein:Math.round(w*1.8),trainingDays:goal==="muscle"?5:4,
-        message:`Welcome ${name}! I've crafted a plan just for you. Let's crush this together! 💪`,bmr,tdee});
-    }setLoading(false);};
-  const finish=()=>{onDone({name:name.trim(),age:parseInt(age)||25,height:parseFloat(height)||165,
-    weight:parseFloat(weight)||60,goalWeight:parseFloat(goalWeight)||0,activity,goal,calGoal:plan.calories,proGoal:plan.protein,
-    trainingDays:plan.trainingDays,xp:0,streak:1,created:td()});};
-  const ws={animation:"fadeUp 0.5s ease",textAlign:"center",width:"100%",maxWidth:360};
-  return <div style={{minHeight:"100vh",background:`linear-gradient(180deg,${T.cream},${T.terraSoft})`,
-    padding:"24px 20px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
-    {step===0&&<div style={ws}><span style={{fontSize:"52px"}}>🌸</span>
-      <h1 style={{fontFamily:"'Fredoka'",fontSize:"28px",color:T.terra,fontWeight:700,margin:"16px 0 8px"}}>Cozy Fit</h1>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"15px",color:T.brownMid,marginBottom:32}}>Your warm little fitness companion 💕</p>
-      <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:10}}>What's your name?</p>
-        <Input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name..."/><div style={{height:14}}/>
-        <Btn onClick={()=>name.trim()&&setStep(1)} color={T.terra} full disabled={!name.trim()}>Next →</Btn></Card></div>}
-    {step===1&&<div style={ws}><span style={{fontSize:"42px"}}>📏</span>
-      <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,margin:"12px 0 6px"}}>Tell me about you, {name}!</h2>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:24}}>All metric 📐</p>
-      <Card style={{textAlign:"left"}}><div style={{display:"flex",flexDirection:"column",gap:12}}>
-        {[["Age",age,setAge,"25"],["Height (cm)",height,setHeight,"165"],["Current Weight (kg)",weight,setWeight,"60"],["Goal Weight (kg)",goalWeight,setGoalWeight,"55"]].map(([l,v,fn,p])=>
-          <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>{l}</p>
-            <Input value={v} onChange={e=>fn(e.target.value)} type="number" placeholder={p}/></div>)}
-        <Btn onClick={()=>age&&height&&weight&&setStep(2)} color={T.terra} full disabled={!age||!height||!weight}>Next →</Btn>
-      </div></Card></div>}
-    {step===2&&<div style={ws}><span style={{fontSize:"42px"}}>🎯</span>
-      <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,margin:"12px 0 6px"}}>Goals & Lifestyle</h2>
-      <Card style={{textAlign:"left"}}><div style={{display:"flex",flexDirection:"column",gap:14}}>
-        <div><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>Activity Level</p>
-          <Select value={activity} onChange={e=>setActivity(e.target.value)} options={[
-            {value:"sedentary",label:"🪑 Sedentary"},{value:"light",label:"🚶 Light"},
-            {value:"moderate",label:"🏃 Moderate"},{value:"active",label:"💪 Very Active"},
-            {value:"athlete",label:"🏆 Athlete"}]}/></div>
-        <div><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>Main Goal</p>
-          <Select value={goal} onChange={e=>setGoal(e.target.value)} options={[
-            {value:"muscle",label:"💪 Build Muscle & Tone"},{value:"lose",label:"🔥 Lose Fat"},
-            {value:"maintain",label:"🌿 Maintain"},{value:"recomp",label:"✨ Recomp"}]}/></div>
-        <Btn onClick={()=>{setStep(3);genPlan();}} color={T.terra} full>Generate Plan ✨</Btn>
-      </div></Card></div>}
-    {step===3&&<div style={ws}>
-      {loading?<><span style={{fontSize:"42px",display:"inline-block",animation:"pulse 1.2s ease-in-out infinite"}}>🪄</span>
-        <p style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.brownMid,marginTop:16}}>Crafting your plan...</p></>
-      :plan?<><span style={{fontSize:"42px"}}>🎉</span>
-        <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.terra,fontWeight:700,margin:"12px 0 16px"}}>Your Plan</h2>
-        <Card style={{textAlign:"left",background:`linear-gradient(135deg,${T.sageSoft},${T.warmWhite})`,border:`1.5px solid ${T.sageLight}`}}>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,lineHeight:1.6,marginBottom:16}}>{plan.message}</p>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            {[["🔥",plan.calories,"kcal/day","Calories",T.terra],["🥩",plan.protein+"g","/day","Protein",T.sage],
-              ["📊",plan.bmr,"kcal","BMR",T.sky],["⚡",plan.tdee,"kcal","TDEE",T.gold]].map(([ic,val,unit,lbl,col])=>
-              <div key={lbl} style={{background:T.card,borderRadius:T.rSm,padding:"12px",textAlign:"center",border:`1.5px solid ${col}33`}}>
-                <span style={{fontSize:"18px"}}>{ic}</span>
-                <p style={{fontFamily:"'Fredoka'",fontSize:"18px",color:col,fontWeight:700,margin:"4px 0 0"}}>{val}<span style={{fontSize:"11px"}}> {unit}</span></p>
-                <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600}}>{lbl}</p></div>)}
-          </div>
-        </Card>
-        <Btn onClick={finish} color={T.terra} full style={{marginTop:8}}>Let's Go! 🌟</Btn>
-      </>:null}
-    </div>}
-  </div>;
-}
-
-// ─── HOME ───
-function Home({profile,meals,workouts,progress,setTab}){
-  const d=td();const mT=meals[d]||[];const wT=workouts[d]||[];
-  const cal=mT.reduce((s,m)=>s+(m.cal||0),0);const pro=mT.reduce((s,m)=>s+(m.protein||0),0);
-  const cG=profile.calGoal||2000;const pG=profile.proGoal||120;
-  const gW=profile.goalWeight||0;
-  const startW=profile.weight||0;
-  const latestW=progress.length>0?progress[0].wt:startW;
-  const weightDiff=gW>0?Math.abs(latestW-gW).toFixed(1):0;
-  const weightPct=gW>0&&startW!==gW?Math.min(Math.max(((startW-latestW)/(startW-gW))*100,0),100):0;
-  return <div>
-    <div style={{textAlign:"center",padding:"20px 0 8px"}}>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid}}>
-        {new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</p>
-      <h1 style={{fontFamily:"'Fredoka'",fontSize:"26px",color:T.brown,fontWeight:700,margin:"6px 0"}}>Hi {profile.name}! ✨</h1></div>
-    <CheerBanner/>
-    <Card style={{background:`linear-gradient(135deg,${T.goldSoft},${T.warmWhite})`,border:`1.5px solid ${T.goldLight}`}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <Sparkle size={20}/><span style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.gold,fontWeight:700}}>Level {lvl(profile.xp)}</span></div>
-        <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid}}>{xpNeed(profile.xp)} XP to next</span></div>
-      <div style={{background:`${T.gold}22`,borderRadius:T.rPill,height:14,overflow:"hidden"}}>
-        <div style={{height:"100%",borderRadius:T.rPill,width:`${xpPct(profile.xp)}%`,
-          background:`linear-gradient(90deg,${T.gold},${T.terra})`,transition:"width 0.6s"}}/></div></Card>
-    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,marginBottom:16,fontWeight:600}}>Today's Goals 🎯</p>
-      <div style={{display:"flex",justifyContent:"space-around",alignItems:"center"}}>
-        <div style={{textAlign:"center"}}><Ring pct={Math.min((cal/cG)*100,100)} color={T.terra}>
-          <span style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.terra,fontWeight:700}}>{cal}</span></Ring>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>/ {cG} kcal</p></div>
-        <div style={{textAlign:"center"}}><Ring pct={Math.min((pro/pG)*100,100)} color={T.sage}>
-          <span style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.sage,fontWeight:700}}>{pro}g</span></Ring>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>/ {pG}g protein</p></div>
-        <div style={{textAlign:"center"}}><Ring pct={wT.length>0?100:0} color={T.sky}>
-          <span style={{fontSize:"20px"}}>{wT.length>0?"✅":"💤"}</span></Ring>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,marginTop:6,fontWeight:600}}>{wT.length} workout{wT.length!==1?"s":""}</p></div>
-      </div></Card>
-    <Card style={{background:`linear-gradient(135deg,${T.terraSoft},${T.roseSoft})`,border:`1.5px solid ${T.roseLight}`}}>
-      <div style={{display:"flex",alignItems:"center",gap:14}}>
-        <span style={{fontSize:"36px"}}>🔥</span>
-        <div><p style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.terra,fontWeight:700}}>{profile.streak||0} Day Streak</p>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginTop:2}}>Keep it burning! 💕</p></div></div></Card>
-    {gW>0&&<Card style={{background:`linear-gradient(135deg,${T.skySoft},${T.warmWhite})`,border:`1.5px solid ${T.skyLight}`}}>
-      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.sky,fontWeight:600,marginBottom:10}}>⚖️ Weight Goal</p>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-        <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid}}>
-          {latestW>0?`Current: ${latestW}kg`:`Start: ${startW}kg`}</span>
-        <span style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:700}}>Goal: {gW}kg</span></div>
-      <div style={{background:`${T.sky}22`,borderRadius:T.rPill,height:14,overflow:"hidden"}}>
-        <div style={{height:"100%",borderRadius:T.rPill,width:`${weightPct}%`,
-          background:`linear-gradient(90deg,${T.sky},${T.sage})`,transition:"width 0.6s"}}/></div>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight,marginTop:6,textAlign:"center"}}>
-        {weightDiff>0?`${weightDiff}kg to go — you've got this! 💪`:"You're at your goal! 🎉"}</p>
-    </Card>}
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
-      <Card onClick={()=>setTab("meals")} hover style={{textAlign:"center",padding:"20px 12px"}}>
-        <span style={{fontSize:"28px"}}>🥗</span><p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginTop:8}}>Log a Meal</p></Card>
-      <Card onClick={()=>setTab("train")} hover style={{textAlign:"center",padding:"20px 12px"}}>
-        <span style={{fontSize:"28px"}}>🏋️‍♀️</span><p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginTop:8}}>Start Workout</p></Card></div>
-    <Card onClick={()=>setTab("settings")} hover style={{padding:"14px 20px"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span>⚙️</span><span style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid}}>Settings</span></div>
-        <span style={{color:T.brownLight}}>›</span></div></Card>
-  </div>;
-}
-
-// ─── RECIPE IMPORT (paste + share target) ───
-function RecipeImport({onAdd,initialText=""}){
-  const[text,setText]=useState(initialText);
-  const[parsed,setParsed]=useState(null);
-  const[loading,setLoading]=useState(false);
-  const[show,setShow]=useState(!!initialText);
-
-  useEffect(()=>{if(initialText){setText(initialText);setShow(true);}},[initialText]);
-
-  const parse=async()=>{
-    if(!text.trim())return;setLoading(true);setParsed(null);
-    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
-        messages:[{role:"user",content:`Extract recipe info from this text (could be an Instagram caption, blog post, or any recipe text). If it contains a URL, try to infer the recipe from context. Parse into structured format.
-
-Text: "${text}"
-
-Respond ONLY with valid JSON: {"recipes":[{"name":"...","cal":number_or_estimate,"protein":number_or_estimate,"ingredients":["..."],"steps":"Brief instructions"}]}
-If calories/protein aren't mentioned, provide reasonable estimates based on ingredients. If multiple recipes, include all.`}]})});
-      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
-      setParsed(JSON.parse(txt.replace(/```json|```/g,"").trim()));
-    }catch{setParsed("error")}setLoading(false);
-  };
-
-  return <Card style={{border:`1.5px solid ${T.skyLight}`}}>
-    <div onClick={()=>setShow(!show)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
-      <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:600}}>📋 Import Recipe (Paste / Share)</p>
-      <span style={{color:T.brownLight,fontSize:"18px"}}>{show?"▲":"▼"}</span></div>
-    {show&&<div style={{marginTop:14}}>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,marginBottom:8,lineHeight:1.5}}>
-        Paste a recipe from Instagram, TikTok, a blog — anywhere! Or share directly from Instagram using the share button → Cozy Fit.</p>
-      <TextArea value={text} onChange={e=>setText(e.target.value)} rows={4}
-        placeholder="Paste recipe text here (Instagram caption, blog recipe, etc)..." style={{marginBottom:10}}/>
-      <Btn onClick={parse} color={T.sky} full disabled={loading||!text.trim()}>
-        {loading?"Parsing recipe... 🍳":"Parse Recipe ✨"}</Btn>
-      {parsed==="error"&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.rose,marginTop:10}}>
-        Couldn't parse that — try pasting more detail! 💔</p>}
-      {parsed&&parsed!=="error"&&parsed.recipes?.map((r,i)=>(
-        <div key={i} style={{marginTop:14,padding:16,background:T.cream,borderRadius:T.rSm,border:`1.5px solid ${T.skyLight}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8,gap:8}}>
-            <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,flex:1}}>{r.name}</p>
-            <div style={{display:"flex",gap:6,flexShrink:0}}>
-              <Badge color={T.terra}>{r.cal} kcal</Badge><Badge color={T.sage}>{r.protein}g</Badge></div></div>
-          {r.ingredients?.length>0&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:4}}>
-            <strong>Ingredients:</strong> {r.ingredients.join(", ")}</p>}
-          {r.steps&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}>
-            <strong>How:</strong> {r.steps}</p>}
-          <Btn onClick={()=>{onAdd(r);setText("");setParsed(null);}} color={T.sage} small>Log This ✅</Btn>
-        </div>
-      ))}
-    </div>}
-  </Card>;
-}
-
-// ─── MEALS ───
-function MealsPage({meals,setMeals,profile,addXP,sharedText}){
-  const[nm,setNm]=useState("");const[cal,setCal]=useState("");const[pro,setPro]=useState("");
-  const[rq,setRq]=useState("");const[recipes,setRecipes]=useState(null);const[ldg,setLdg]=useState(false);const[showGen,setShowGen]=useState(false);
-  const d=td();const list=meals[d]||[];
-  const tCal=list.reduce((s,m)=>s+(m.cal||0),0);const tPro=list.reduce((s,m)=>s+(m.protein||0),0);
-  const cG=profile.calGoal||2000;const pG=profile.proGoal||120;
-  const cR=Math.max(0,cG-tCal);const pR=Math.max(0,pG-tPro);
-
-  const add=()=>{if(!nm.trim())return;const up={...meals,[d]:[...list,{id:Date.now(),name:nm.trim(),cal:parseInt(cal)||0,
-    protein:parseInt(pro)||0,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};
-    setMeals(up);sv(KS.meals,up);addXP(15);setNm("");setCal("");setPro("");};
-  const rm=id=>{const up={...meals,[d]:list.filter(m=>m.id!==id)};setMeals(up);sv(KS.meals,up);};
-  const addRecipe=r=>{const up={...meals,[d]:[...(meals[d]||[]),{id:Date.now(),name:r.name,cal:r.cal||0,protein:r.protein||0,
-    time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};setMeals(up);sv(KS.meals,up);addXP(15);};
-  const gen=async()=>{setLdg(true);setRecipes(null);
-    try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
-      headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
-        messages:[{role:"user",content:`Generate 3 high-protein meal ideas. Remaining: ~${cR} kcal, ~${pR}g protein. Goal: muscle building. ${rq?`Preference: ${rq}`:"Any cuisine"}. ONLY valid JSON: [{"name":"...","cal":number,"protein":number,"ingredients":["..."],"steps":"Brief instructions"}]`}]})});
-      const data=await res.json();const txt=data.content?.map(c=>c.text||"").join("")||"";
-      setRecipes(JSON.parse(txt.replace(/```json|```/g,"").trim()));
-    }catch{setRecipes("error")}setLdg(false);};
-
-  return <div>
-    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Meals 🍽️</h2>
-    <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:16}}>Fuel your gains</p>
-    <CheerBanner/>
-    <Card style={{background:`linear-gradient(135deg,${T.sageSoft},${T.warmWhite})`,border:`1.5px solid ${T.sageLight}`}}>
-      <div style={{display:"flex",justifyContent:"space-around"}}>
-        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.terra,fontWeight:700}}>{tCal}</p>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>/ {cG} kcal</p></div>
-        <div style={{width:1,background:T.brownPale}}/>
-        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.sage,fontWeight:700}}>{tPro}g</p>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>/ {pG}g protein</p></div>
-        <div style={{width:1,background:T.brownPale}}/>
-        <div style={{textAlign:"center"}}><p style={{fontFamily:"'Fredoka'",fontSize:"24px",color:T.sky,fontWeight:700}}>{list.length}</p>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,fontWeight:600}}>meals</p></div>
-      </div></Card>
-
-    {/* Recipe Import (paste / share target) */}
-    <RecipeImport onAdd={addRecipe} initialText={sharedText}/>
-
-    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:12}}>Log a Meal ✏️</p>
-      <div style={{display:"flex",flexDirection:"column",gap:10}}>
-        <Input value={nm} onChange={e=>setNm(e.target.value)} placeholder="What did you eat?"/>
-        <div style={{display:"flex",gap:10}}>
-          <Input value={cal} onChange={e=>setCal(e.target.value)} placeholder="Calories" type="number" style={{flex:1}}/>
-          <Input value={pro} onChange={e=>setPro(e.target.value)} placeholder="Protein (g)" type="number" style={{flex:1}}/></div>
-        <Btn onClick={add} color={T.terra} full>Log Meal ✨ +15 XP</Btn></div></Card>
-
-    {/* AI Recipe Generator */}
-    <Card style={{border:`1.5px solid ${T.goldLight}`}}>
-      <div onClick={()=>setShowGen(!showGen)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
-        <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.gold,fontWeight:600}}>✨ Recipe Ideas (AI)</p>
-        <span style={{color:T.brownLight,fontSize:"18px"}}>{showGen?"▲":"▼"}</span></div>
-      {showGen&&<div style={{marginTop:14}}>
-        <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}>
-          Remaining: <strong style={{color:T.terra}}>{cR} kcal</strong> · <strong style={{color:T.sage}}>{pR}g protein</strong></p>
-        <Input value={rq} onChange={e=>setRq(e.target.value)} placeholder="Preferences? (quick, vegan, Asian...)" style={{marginBottom:10}}/>
-        <Btn onClick={gen} color={T.gold} full disabled={ldg}>{ldg?"Cooking... 🍳":"Generate Recipes 🪄"}</Btn>
-        {recipes==="error"&&<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.rose,marginTop:10}}>Something went wrong 💔</p>}
-        {Array.isArray(recipes)&&recipes.map((r,i)=><div key={i} style={{marginTop:14,padding:16,background:T.cream,
-          borderRadius:T.rSm,border:`1.5px solid ${T.goldLight}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8,gap:8}}>
-            <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,flex:1}}>{r.name}</p>
-            <div style={{display:"flex",gap:6,flexShrink:0}}><Badge color={T.terra}>{r.cal} kcal</Badge><Badge color={T.sage}>{r.protein}g</Badge></div></div>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:4}}><strong>Ingredients:</strong> {r.ingredients?.join(", ")}</p>
-          <p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,marginBottom:10}}><strong>How:</strong> {r.steps}</p>
-          <Btn onClick={()=>addRecipe(r)} color={T.sage} small>Log This ✅</Btn></div>)}</div>}</Card>
-
-    {/* Meal list */}
-    {list.slice().reverse().map(m=><Card key={m.id} style={{padding:"14px 18px"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{flex:1}}><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{m.name}</p>
-          <div style={{display:"flex",gap:8,marginTop:4,flexWrap:"wrap"}}>
-            <span style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight}}>{m.time}</span>
-            <Badge color={T.terra}>{m.cal} kcal</Badge>{m.protein>0&&<Badge color={T.sage}>{m.protein}g</Badge>}</div></div>
-        <button onClick={()=>rm(m.id)} style={{background:`${T.rose}22`,border:"none",width:32,height:32,
-          borderRadius:"50%",cursor:"pointer",fontSize:"14px",color:T.rose,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
-      </div></Card>)}
-    {!list.length&&<div style={{textAlign:"center",padding:"24px 0"}}><span style={{fontSize:"40px"}}>🍃</span>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownLight,marginTop:8}}>No meals yet!</p></div>}
-  </div>;
-}
-
-// ─── TRAIN (simplified for PWA — includes library, builder, log) ───
-function TrainPage({workouts,setWorkouts,customs,setCustoms,addXP,profile}){
-  const[view,setView]=useState("library");const[open,setOpen]=useState(null);
-  const[dur,setDur]=useState("30");const[sets,setSets]=useState("3");const[reps,setReps]=useState("12");
-  const[search,setSearch]=useState("");const[cName,setCName]=useState("");const[cExs,setCExs]=useState([]);
-  const d=td();const tList=workouts[d]||[];
-
-  const log=(name,cat)=>{const up={...workouts,[d]:[...tList,{id:Date.now(),name,cat,dur:parseInt(dur)||30,
-    sets:parseInt(sets)||3,reps:parseInt(reps)||12,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}]};
-    setWorkouts(up);sv(KS.work,up);addXP(25);};
-  const rmW=id=>{const up={...workouts,[d]:tList.filter(w=>w.id!==id)};setWorkouts(up);sv(KS.work,up);};
-  const addC=n=>{if(!cExs.includes(n))setCExs([...cExs,n]);};const rmC=n=>setCExs(cExs.filter(e=>e!==n));
-  const saveC=()=>{if(!cName.trim()||!cExs.length)return;const up=[...customs,{id:Date.now(),name:cName.trim(),exercises:cExs}];
-    setCustoms(up);sv(KS.cust,up);addXP(30);setCName("");setCExs([]);setView("library");};
-  const delC=id=>{const up=customs.filter(c=>c.id!==id);setCustoms(up);sv(KS.cust,up);};
-  const runC=r=>{const ne=r.exercises.map(ex=>({id:Date.now()+Math.random(),name:ex,cat:"Custom: "+r.name,
-    dur:parseInt(dur)||30,sets:parseInt(sets)||3,reps:parseInt(reps)||12,
-    time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}));
-    const up={...workouts,[d]:[...(workouts[d]||[]),...ne]};setWorkouts(up);sv(KS.work,up);addXP(40);};
-  const sL=search.toLowerCase();
-  const filtered=search?Object.entries(EXERCISES).reduce((a,[c,dd])=>{
-    const f=dd.items.filter(e=>e.toLowerCase().includes(sL));if(f.length)a.push([c,{...dd,items:f}]);return a;},[]):null;
-
-  return <div>
-    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Train 💪</h2>
-    <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownMid,marginBottom:16}}>Build strength, build you</p>
-    <CheerBanner/>
-    <div style={{display:"flex",gap:8,marginBottom:16}}>
-      {[["library","🏋️ Library"],["builder","🔨 Builder"],["log",`📋 Log (${tList.length})`]].map(([id,l])=>
-        <Btn key={id} onClick={()=>setView(id)} color={T.terra} outline={view!==id} small style={{flex:1,fontSize:"12px"}}>{l}</Btn>)}
-    </div>
-    {view!=="log"&&<Card style={{padding:"14px 18px"}}><div style={{display:"flex",gap:10}}>
-      {[["Sets",sets,setSets],["Reps",reps,setReps],["Min",dur,setDur]].map(([l,v,fn])=>
-        <div key={l} style={{flex:1}}><p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600,marginBottom:4}}>{l}</p>
-          <Input value={v} onChange={e=>fn(e.target.value)} type="number"/></div>)}</div></Card>}
-    {view==="library"&&<>
-      <Input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 Search exercises..." style={{marginBottom:14}}/>
-      {customs.length>0&&<>{customs.map(r=><Card key={r.id} style={{border:`1.5px solid ${T.goldLight}`}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-          <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{r.name}</p>
-          <div style={{display:"flex",gap:6}}>
-            <Btn onClick={()=>runC(r)} color={T.sage} small style={{fontSize:"11px"}}>Start ▶</Btn>
-            <button onClick={()=>delC(r.id)} style={{background:`${T.rose}22`,border:"none",width:30,height:30,
-              borderRadius:"50%",cursor:"pointer",fontSize:"12px",color:T.rose}}>✕</button></div></div>
-        <p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid}}>{r.exercises.join(" → ")}</p></Card>)}</>}
-      {(filtered||Object.entries(EXERCISES)).map(([cat,data])=>
-        <Card key={cat} onClick={open===cat?undefined:()=>setOpen(cat)} style={{cursor:"pointer",borderLeft:`4px solid ${data.color}`}}>
-          <div onClick={()=>setOpen(open===cat?null:cat)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
-            <span style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>
-              {data.emoji} {cat} <span style={{fontSize:"12px",color:T.brownLight}}>({data.items.length})</span></span>
-            <span style={{color:T.brownLight}}>{open===cat?"▲":"▼"}</span></div>
-          {open===cat&&<div style={{marginTop:12,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}} onClick={e=>e.stopPropagation()}>
-            {data.items.map(ex=><div key={ex} style={{background:T.cream,borderRadius:T.rSm,padding:"10px 12px"}}>
-              <span style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brown,fontWeight:600,display:"block",marginBottom:6}}>{ex}</span>
-              <div style={{display:"flex",gap:4}}>
-                <Btn onClick={()=>log(ex,cat)} color={data.color} small style={{fontSize:"10px",padding:"5px 10px",flex:1}}>Log</Btn>
-                <Btn onClick={()=>{addC(ex);setView("builder")}} color={T.gold} small outline style={{fontSize:"10px",padding:"5px 8px"}}>+</Btn></div></div>)}</div>}
-        </Card>)}
-    </>}
-    {view==="builder"&&<>
-      <Card style={{border:`1.5px solid ${T.goldLight}`,background:`linear-gradient(135deg,${T.goldSoft},${T.warmWhite})`}}>
-        <p style={{fontFamily:"'Fredoka'",fontSize:"16px",color:T.gold,fontWeight:600,marginBottom:12}}>🔨 Build a Routine</p>
-        <Input value={cName} onChange={e=>setCName(e.target.value)} placeholder="Routine name" style={{marginBottom:12}}/>
-        {cExs.length?<div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:12}}>
-          {cExs.map((ex,i)=><div key={ex} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
-            padding:"8px 12px",background:T.card,borderRadius:T.rSm}}>
-            <span style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brown}}>{i+1}. {ex}</span>
-            <button onClick={()=>rmC(ex)} style={{background:"none",border:"none",cursor:"pointer",color:T.rose,fontSize:"16px"}}>✕</button></div>)}</div>
-        :<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownLight,marginBottom:12}}>Tap exercises below to add!</p>}
-        <Btn onClick={saveC} color={T.gold} full disabled={!cName.trim()||!cExs.length}>Save ⭐ +30 XP</Btn></Card>
-      {Object.entries(EXERCISES).map(([cat,data])=><Card key={cat} style={{padding:"12px 16px",borderLeft:`4px solid ${data.color}`}}>
-        <p style={{fontFamily:"'Fredoka'",fontSize:"13px",color:T.brown,fontWeight:600,marginBottom:8}}>{data.emoji} {cat}</p>
-        <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-          {data.items.map(ex=><button key={ex} onClick={()=>addC(ex)} style={{
-            background:cExs.includes(ex)?data.color:T.cream,color:cExs.includes(ex)?"#fff":T.brown,
-            border:"none",borderRadius:T.rPill,padding:"6px 12px",fontFamily:"'Quicksand'",fontSize:"12px",
-            fontWeight:600,cursor:"pointer"}}>{ex}</button>)}</div></Card>)}</>}
-    {view==="log"&&<>{tList.length?tList.slice().reverse().map(w=><Card key={w.id} style={{padding:"14px 18px"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600}}>{w.name}</p>
-          <div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}>
-            <span style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownLight}}>{w.time}</span>
-            <Badge color={T.terra}>{w.sets}×{w.reps}</Badge><Badge color={T.sky}>{w.dur} min</Badge></div></div>
-        <button onClick={()=>rmW(w.id)} style={{background:`${T.rose}22`,border:"none",width:32,height:32,
-          borderRadius:"50%",cursor:"pointer",fontSize:"14px",color:T.rose}}>✕</button></div></Card>)
-    :<div style={{textAlign:"center",padding:"32px 0"}}><span style={{fontSize:"40px"}}>🌿</span>
-      <p style={{fontFamily:"'Quicksand'",fontSize:"14px",color:T.brownLight,marginTop:8}}>No exercises today!</p></div>}</>}
-  </div>;
-}
-
-// ─── PROGRESS ───
-function ProgressPage({progress,setProgress,addXP}){
-  const[wt,setWt]=useState("");const[waist,setWaist]=useState("");const[hips,setHips]=useState("");
-  const[arms,setArms]=useState("");const[note,setNote]=useState("");
-  const[viewPhoto,setViewPhoto]=useState(null);
-  const[photos,setPhotos]=useState(()=>ld(KS.photos,[]));
-  const fileRef=useRef(null);
-
-  const add=()=>{if(!wt&&!waist&&!hips&&!arms)return;
-    const up=[{id:Date.now(),date:td(),wt:parseFloat(wt)||0,waist:parseFloat(waist)||0,
-      hips:parseFloat(hips)||0,arms:parseFloat(arms)||0,note:note.trim()},...progress];
-    setProgress(up);sv(KS.prog,up);addXP(20);setWt("");setWaist("");setHips("");setArms("");setNote("");};
-  const rm=id=>{const up=progress.filter(p=>p.id!==id);setProgress(up);sv(KS.prog,up);};
-  const handlePhoto=e=>{const file=e.target.files?.[0];if(!file)return;
-    const img=new Image();const url=URL.createObjectURL(file);
-    img.onload=()=>{const mx=600;let w=img.width,h=img.height;
-      if(w>mx||h>mx){if(w>h){h=(h/w)*mx;w=mx}else{w=(w/h)*mx;h=mx}}
-      const c=document.createElement("canvas");c.width=w;c.height=h;
-      c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
-      const up=[{id:Date.now(),date:td(),data:c.toDataURL("image/jpeg",0.6)},...photos.slice(0,19)];
-      setPhotos(up);sv(KS.photos,up);addXP(10);};img.src=url;e.target.value="";};
-  const rmPhoto=id=>{const up=photos.filter(p=>p.id!==id);setPhotos(up);sv(KS.photos,up);};
-  const cd=progress.slice(0,14).reverse();const ws=cd.map(d=>d.wt).filter(Boolean);
-  const mn=ws.length?Math.min(...ws)-1:0;const mx=ws.length?Math.max(...ws)+1:100;const rg=mx-mn||1;
-
-  return <div>
-    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:4}}>Progress 📈</h2>
-    <CheerBanner/>
-    {ws.length>1&&<Card style={{border:`1.5px solid ${T.roseLight}`}}>
-      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.rose,fontWeight:600,marginBottom:12}}>Weight Trend (kg)</p>
-      <div style={{display:"flex",alignItems:"flex-end",gap:6,height:120}}>
-        {cd.map((d,i)=>{const h=d.wt?((d.wt-mn)/rg)*90+16:0;
-          return <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-            <span style={{fontFamily:"'Quicksand'",fontSize:"9px",color:T.brownLight,fontWeight:600}}>{d.wt||""}</span>
-            <div style={{width:"100%",height:h,minWidth:8,background:`linear-gradient(to top,${T.terra},${T.rose})`,
-              borderRadius:"6px 6px 0 0",transition:"height 0.4s"}}/></div>;})}
-      </div></Card>}
-    <Card><p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.brown,fontWeight:600,marginBottom:12}}>Log Measurements 📏</p>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-        {[["Weight (kg)",wt,setWt],["Waist (cm)",waist,setWaist],["Hips (cm)",hips,setHips],["Arms (cm)",arms,setArms]].map(([l,v,fn])=>
-          <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"11px",color:T.brownLight,fontWeight:600,marginBottom:4}}>{l}</p>
-            <Input value={v} onChange={e=>fn(e.target.value)} placeholder="—" type="number"/></div>)}
+<!-- HOME -->
+<div class="pg on" id="pg-home">
+  <div class="hero">
+    <div class="hc htl"></div><div class="hc htr"></div><div class="hc hbl"></div><div class="hc hbr"></div>
+    <div class="hcoord hctl" id="coord-tl">LAT 53.4808 N // LON 2.2426 W</div>
+    <div class="hcoord hctr">PORTFOLIO ONLINE // v2.6</div>
+    <div class="hero-in">
+      <p class="eyebrow" id="eyebrow"><span class="ping"></span>MANCHESTER, UK &nbsp;//&nbsp; CREATIVE DESIGNER &nbsp;//&nbsp; AVAILABLE FOR WORK</p>
+      <div class="hname" id="hname">
+        <div id="pipe"></div>
+        <span class="nline" id="nl1"></span>
+        <span class="nline" id="nl2"></span>
       </div>
-      <Input value={note} onChange={e=>setNote(e.target.value)} placeholder="How are you feeling?" style={{marginBottom:12}}/>
-      <Btn onClick={add} color={T.rose} full>Log Progress ✨ +20 XP</Btn></Card>
-    <Card style={{border:`1.5px solid ${T.skyLight}`}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-        <p style={{fontFamily:"'Fredoka'",fontSize:"15px",color:T.sky,fontWeight:600}}>📸 Progress Photos</p>
-        <Btn onClick={()=>fileRef.current?.click()} color={T.sky} small>Upload</Btn>
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{display:"none"}}/></div>
-      {photos.length?<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-        {photos.map(p=><div key={p.id} onClick={()=>setViewPhoto(p)} style={{position:"relative",paddingBottom:"100%",borderRadius:T.rSm,
-          overflow:"hidden",cursor:"pointer",border:`2px solid ${T.terraSoft}`}}>
-          <img src={p.data} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
-          <div style={{position:"absolute",bottom:0,left:0,right:0,background:"rgba(0,0,0,0.5)",padding:"3px 6px"}}>
-            <span style={{fontFamily:"'Quicksand'",fontSize:"9px",color:"#fff",fontWeight:600}}>
-              {new Date(p.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</span></div></div>)}
-      </div>:<p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownLight}}>No photos yet 📷</p>}</Card>
-    {viewPhoto&&<div onClick={()=>setViewPhoto(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",
-      zIndex:999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-      <img src={viewPhoto.data} style={{maxWidth:"100%",maxHeight:"70vh",borderRadius:T.r,objectFit:"contain"}}/>
-      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:"#fff",marginTop:12}}>
-        {new Date(viewPhoto.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</p>
-      <div style={{display:"flex",gap:12,marginTop:12}}>
-        <Btn onClick={e=>{e.stopPropagation();rmPhoto(viewPhoto.id);setViewPhoto(null)}} color={T.rose} small>Delete</Btn>
-        <Btn onClick={()=>setViewPhoto(null)} color={T.sky} small outline>Close</Btn></div></div>}
-    {progress.map(p=><Card key={p.id} style={{padding:"14px 18px"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-        <div><p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brown,fontWeight:600}}>
-          {new Date(p.date).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</p>
-          <div style={{display:"flex",gap:8,marginTop:6,flexWrap:"wrap"}}>
-            {p.wt>0&&<Badge color={T.terra}>⚖️ {p.wt}kg</Badge>}{p.waist>0&&<Badge color={T.sky}>Waist {p.waist}cm</Badge>}
-            {p.hips>0&&<Badge color={T.rose}>Hips {p.hips}cm</Badge>}{p.arms>0&&<Badge color={T.sage}>Arms {p.arms}cm</Badge>}</div>
-          {p.note&&<p style={{fontFamily:"'Quicksand'",fontSize:"12px",color:T.brownMid,marginTop:6,fontStyle:"italic"}}>"{p.note}"</p>}</div>
-        <button onClick={()=>rm(p.id)} style={{background:`${T.rose}22`,border:"none",width:30,height:30,
-          borderRadius:"50%",cursor:"pointer",fontSize:"12px",color:T.rose,flexShrink:0}}>✕</button></div></Card>)}
-  </div>;
-}
-
-// ─── SETTINGS ───
-function SettingsPage({profile,setProfile,setTab}){
-  const[name,setName]=useState(profile.name||"");const[cG,setCG]=useState(String(profile.calGoal||2000));
-  const[pG,setPG]=useState(String(profile.proGoal||120));
-  const[gW,setGW]=useState(String(profile.goalWeight||""));
-  const doSave=()=>{const up={...profile,name:name.trim()||profile.name,calGoal:parseInt(cG)||2000,
-    proGoal:parseInt(pG)||120,goalWeight:parseFloat(gW)||0};setProfile(up);sv(KS.pro,up);setTab("home");};
-  return <div>
-    <h2 style={{fontFamily:"'Fredoka'",fontSize:"22px",color:T.brown,fontWeight:700,marginBottom:16}}>Settings ⚙️</h2>
-    <Card><div style={{display:"flex",flexDirection:"column",gap:14}}>
-      {[["Your Name",name,setName,"text"],["Daily Calorie Goal",cG,setCG,"number"],
-        ["Daily Protein Goal (g)",pG,setPG,"number"],["Goal Weight (kg)",gW,setGW,"number"]].map(([l,v,fn,t])=>
-        <div key={l}><p style={{fontFamily:"'Quicksand'",fontSize:"13px",color:T.brownMid,fontWeight:600,marginBottom:4}}>{l}</p>
-          <Input value={v} onChange={e=>fn(e.target.value)} type={t}/></div>)}
-      <Btn onClick={doSave} color={T.terra} full>Save 💕</Btn></div></Card>
-    <Card style={{background:T.cream}}>
-      <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid,fontWeight:600,marginBottom:6}}>Your Stats</p>
-      <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-        <Badge color={T.terra}>Height: {profile.height}cm</Badge><Badge color={T.sage}>Starting: {profile.weight}kg</Badge>
-        {profile.goalWeight>0&&<Badge color={T.gold}>Goal: {profile.goalWeight}kg</Badge>}
-        <Badge color={T.sky}>Age: {profile.age}</Badge><Badge color={T.gold}>Level {lvl(profile.xp)}</Badge></div></Card>
-  </div>;
-}
-
-// ─── MAIN APP ───
-function CozyFitApp(){
-  const[loading,setLoading]=useState(true);const[tab,setTab]=useState(SHARED.hasData?"meals":"home");
-  const[profile,setProfile]=useState(null);const[meals,setMeals]=useState({});
-  const[workouts,setWorkouts]=useState({});const[progress,setProgress]=useState([]);
-  const[customs,setCustoms]=useState([]);
-  const[popup,setPopup]=useState(null);const scrollRef=useRef(null);
-  const[sharedText]=useState(SHARED.hasData?[SHARED.text,SHARED.url,SHARED.title].filter(Boolean).join("\n"):"");
-
-  useEffect(()=>{
-    setProfile(ld(KS.pro,null));setMeals(ld(KS.meals,{}));setWorkouts(ld(KS.work,{}));
-    setProgress(ld(KS.prog,[]));setCustoms(ld(KS.cust,[]));setLoading(false);
-  },[]);
-  useEffect(()=>{if(scrollRef.current)scrollRef.current.scrollTop=0},[tab]);
-  const addXP=useCallback(amt=>{setProfile(p=>{const up={...p,xp:(p.xp||0)+amt};sv(KS.pro,up);return up;});
-    setPopup(`+${amt} XP ✨`);setTimeout(()=>setPopup(null),1500);},[]);
-  const setup=p=>{sv(KS.pro,p);setProfile(p);};
-
-  if(loading)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",
-    minHeight:"100vh",background:T.cream,flexDirection:"column",gap:12}}>
-    <span style={{fontSize:"36px",animation:"pulse 1.2s ease-in-out infinite"}}>🌸</span>
-    <p style={{fontFamily:"'Fredoka'",fontSize:"14px",color:T.brownMid}}>Loading...</p></div>;
-  if(!profile)return <Onboarding onDone={setup}/>;
-  return <div style={{background:T.cream,minHeight:"100vh",maxHeight:"100vh",color:T.brown,
-    maxWidth:480,margin:"0 auto",display:"flex",flexDirection:"column",position:"relative",
-    overflow:"hidden",touchAction:"manipulation",fontFamily:"'Quicksand'"}}>
-    {popup&&<div style={{position:"fixed",top:70,left:"50%",transform:"translateX(-50%)",
-      fontFamily:"'Fredoka'",fontSize:"18px",color:T.gold,fontWeight:700,
-      animation:"xpFloat 1.5s forwards",zIndex:999,pointerEvents:"none"}}>{popup}</div>}
-    <div ref={scrollRef} style={{flex:1,padding:"16px 16px 8px",overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch"}}>
-      {tab==="home"&&<Home profile={profile} meals={meals} workouts={workouts} progress={progress} setTab={setTab}/>}
-      {tab==="meals"&&<MealsPage meals={meals} setMeals={setMeals} profile={profile} addXP={addXP} sharedText={sharedText}/>}
-      {tab==="train"&&<TrainPage workouts={workouts} setWorkouts={setWorkouts} customs={customs} setCustoms={setCustoms} addXP={addXP} profile={profile}/>}
-      {tab==="progress"&&<ProgressPage progress={progress} setProgress={setProgress} addXP={addXP}/>}
-      {tab==="settings"&&<SettingsPage profile={profile} setProfile={setProfile} setTab={setTab}/>}
+      <div class="hrole" id="hrole">
+        <span class="rbox">CREATIVE DESIGNER</span>
+        <span class="rmeta">// GRAPHIC DESIGN &middot; PRESENTATION DESIGN &middot; WORKSHOP FACILITATION</span>
+      </div>
+      <p class="htag" id="htag">
+        Creative designer with 9+ years spanning presentations, brand,<br>internal comms, facilitation and video.
+        <span class="sub">[ ADOBE SUITE &middot; POWERPOINT &middot; FACILITATION &middot; GENERATIVE AI ]</span>
+      </p>
     </div>
-    <TabBar tab={tab} setTab={setTab}/>
-  </div>;
-}
+    <div class="hbot" id="hbot">
+      <div>
+        <div class="slbl2"><span>AVAILABILITY</span><span>OPEN</span></div>
+        <div class="strk"><div class="sfil"></div></div>
+        <div class="slbl2"><span>BASED IN</span><span style="color:var(--blue)">MANCHESTER, UK</span></div>
+      </div>
+      <div class="hscroll"><div class="scline"></div>EXPLORE WORK</div>
+    </div>
+  </div>
+</div>
 
-ReactDOM.render(<CozyFitApp/>,document.getElementById("root"));
+<!-- WORK -->
+<div class="pg" id="pg-work">
+  <div class="sec" style="padding-top:120px">
+    <p class="sl rev"><span class="dim">[01]</span>&nbsp; SELECTED WORK</p>
+    <div class="wtabs rev">
+      <div class="wtab on" data-cat="graphic">Graphic Design</div>
+      <div class="wtab" data-cat="video">Video</div>
+      <div class="wtab" data-cat="presentation">Presentation Design</div>
+    </div>
+    <!-- GRAPHIC -->
+    <div class="wcat-panel on" id="wcat-graphic">
+      <div class="wgrid hl">
+        <div class="wi" data-project="posters">
+          <div class="wthumb">
+            <div class="wbg" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:#000">
+              <div style="grid-column:1;grid-row:1/3;background:url('images/esports.png') center/cover no-repeat"></div>
+              <div style="background:url('images/ren1.jpg') center top/cover no-repeat"></div>
+              <div style="background:url('images/wearen.jpg') center/cover no-repeat"></div>
+            </div>
+            <span class="wtag">POSTER DESIGN</span>
+          </div>
+          <div class="wov"><div class="wcat-lbl">GRAPHIC DESIGN &middot; INTERNAL COMMS</div><div class="wtit">Poster &amp; Banner Designs</div><div class="wview">View project &#8599;</div></div>
+        </div>
+        <div class="wi" data-project="digis">
+          <div class="wthumb"><div class="wbg bg-digi"></div><span class="wtag">DIGITAL SIGNAGE</span></div>
+          <div class="wov"><div class="wcat-lbl">DIGITAL SIGNAGE &middot; INTERNAL COMMS</div><div class="wtit">Digis &mdash; Digital Signage</div><div class="wview">View project &#8599;</div></div>
+        </div>
+        <div class="wi" data-project="infographic">
+          <div class="wthumb"><div class="wbg bg-infographic"></div><span class="wtag">INFOGRAPHIC</span></div>
+          <div class="wov"><div class="wcat-lbl">DATA VISUALISATION &middot; INFOGRAPHIC</div><div class="wtit">HMRC Organisational Infographic</div><div class="wview">View project &#8599;</div></div>
+        </div>
+        <div class="wi" data-project="logos">
+          <div class="wthumb"><div class="wbg bg-logo"></div><span class="wtag">LOGO DESIGN</span></div>
+          <div class="wov"><div class="wcat-lbl">BRAND IDENTITY &middot; LOGO DESIGN</div><div class="wtit">Logo Design</div><div class="wview">View project &#8599;</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- VIDEO -->
+    <div class="wcat-panel" id="wcat-video">
+      <div class="wgrid hl">
+        <div class="wi" data-project="mraw"><div class="wthumb"><div class="wbg bg-mraw"></div><span class="wtag">FEATURED</span></div><div class="wov"><div class="wcat-lbl">VIDEO DIRECTION &middot; DEI CAMPAIGN</div><div class="wtit">REN: Multi Racial Awareness Week</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="renwork"><div class="wthumb"><div class="wbg bg-ren"></div><span class="wtag">VIDEO PRODUCTION</span></div><div class="wov"><div class="wcat-lbl">VIDEO PRODUCTION &middot; DEI CAMPAIGN</div><div class="wtit">REN: Working at Capgemini</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="flex"><div class="wthumb"><div class="wbg bg-flex"></div><span class="wtag">ANIMATION</span></div><div class="wov"><div class="wcat-lbl">MOTION DESIGN &middot; ANIMATION</div><div class="wtit">Capgemini Flex Animation</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="esportsvid"><div class="wthumb"><div class="wbg bg-esportsvid"></div><span class="wtag">EVENT VIDEO</span></div><div class="wov"><div class="wcat-lbl">VIDEO EDITING &middot; EVENT PRODUCTION</div><div class="wtit">Capgemini e-Sports Tournament</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="podcast"><div class="wthumb"><div class="wbg bg-podcast"></div><span class="wtag">VIDEO PODCAST</span></div><div class="wov"><div class="wcat-lbl">VIDEO PRODUCTION &middot; EDUCATION</div><div class="wtit">In Living Colours Podcast</div><div class="wview">View project &#8599;</div></div></div>
+      </div>
+    </div>
+    <!-- PRESENTATION -->
+    <div class="wcat-panel" id="wcat-presentation">
+      <div class="wgrid hl">
+        <div class="wi" data-project="daylife"><div class="wthumb"><div class="wbg bg-daylife"></div><span class="wtag">FEATURED</span></div><div class="wov"><div class="wcat-lbl">INTERACTIVE PRESENTATION &middot; DEI</div><div class="wtit">A Day in Your Life: A Black Experience</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="yasuke"><div class="wthumb"><div class="wbg bg-yasuke"></div><span class="wtag">PRESENTATION</span></div><div class="wov"><div class="wcat-lbl">PRESENTATION DESIGN &middot; STORYTELLING</div><div class="wtit">Yasuke: The African Samurai</div><div class="wview">View project &#8599;</div></div></div>
+        <div class="wi" data-project="blm"><div class="wthumb"><div class="wbg bg-blm"></div><span class="wtag">PRESENTATION</span></div><div class="wov"><div class="wcat-lbl">PRESENTATION DESIGN &middot; DEI WORKSHOP</div><div class="wtit">Black Lives Matter</div><div class="wview">View project &#8599;</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="pgft"><p>&copy; 2026 Vince Tomlinson</p><p class="ver">PORTFOLIO v2.6 // ONLINE</p></div>
+</div>
 
-// Register Service Worker
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("./sw.js").then(r=>console.log("SW registered",r.scope)).catch(e=>console.error("SW failed",e));
+<!-- ABOUT -->
+<div class="pg" id="pg-about">
+  <div class="sec" style="padding-top:120px">
+    <p class="sl rev"><span class="dim">[02]</span>&nbsp; ABOUT</p>
+    <div class="agrid">
+      <div style="position:sticky;top:120px" class="rev">
+        <div class="panel tr bl pcard">
+          <div class="chead">PROFILE // LOADED</div>
+          <div class="pname">Vince<br>Tomlinson</div>
+          <div class="prole">// CREATIVE DESIGNER</div>
+          <div class="sgrid">
+            <div class="sbox"><div class="sblbl">YEARS EXP.</div><div class="sbval">9<em>+</em></div></div>
+            <div class="sbox"><div class="sblbl">PROJECTS</div><div class="sbval">500<em>+</em></div></div>
+            <div class="sbox"><div class="sblbl">CLIENTS</div><div class="sbval">10<em>+</em></div></div>
+            <div class="sbox"><div class="sblbl">LOCATION</div><div class="sbval" style="font-size:14px;padding-top:4px">Manchester<em>, UK</em></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="bio rev">
+          <p>I'm Vince Tomlinson! A creative designer based in Manchester with over nine years of experience across <strong>presentation design, visual communication and digital production</strong>. My toolkit spans the full Adobe Creative Suite, PowerPoint, Keynote and beyond.</p>
+          <p>I spent eight years at Capgemini: first as a Collaborative Designer in the Accelerated Solutions Environment, facilitating complex problem-solving workshops using MG Taylor Methodology, then as a Creative Designer driving internal communications for HMRC, accumulating over <strong>500 varied projects</strong> in graphic design, video editing and presentation design. Most recently I brought that experience to DRPG as a Presentation Designer and Operator for high-stakes live events and broadcasts.</p>
+          <p>Outside of design I have a passion for <strong>creative consulting and DEI training</strong>.</p>
+          <p>I firmly believe the best creative work comes from people who never stop being curious.</p>
+        </div>
+        <div class="divl rev"></div>
+        <p class="sl rev" style="font-size:9px;margin-bottom:24px"><span class="dim">[</span>SKILLS<span class="dim">]</span></p>
+        <div id="skbars" class="rev">
+          <div class="skrow" data-pct="95"><div class="skhd"><span class="sknm">Presentation Design</span><span class="sklv">Expert</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="90"><div class="skhd"><span class="sknm">Workshop Facilitation</span><span class="sklv">Expert</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="83"><div class="skhd"><span class="sknm">Adobe Premiere Pro</span><span class="sklv">Highly Experienced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="80"><div class="skhd"><span class="sknm">Adobe After Effects</span><span class="sklv">Highly Experienced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="80"><div class="skhd"><span class="sknm">Adobe Photoshop</span><span class="sklv">Highly Experienced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="80"><div class="skhd"><span class="sknm">Adobe Illustrator</span><span class="sklv">Highly Experienced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="70"><div class="skhd"><span class="sknm">Video Editing &amp; Motion</span><span class="sklv">Advanced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="70"><div class="skhd"><span class="sknm">Generative AI</span><span class="sklv">Advanced</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+          <div class="skrow" data-pct="60"><div class="skhd"><span class="sknm">3D Design &mdash; Blender</span><span class="sklv">Proficient</span></div><div class="sktrk"><div class="skfil"></div></div></div>
+        </div>
+        <div class="divl rev d1"></div>
+        <p class="sl rev d1" style="font-size:9px;margin-bottom:20px"><span class="dim">[</span>TOOLKIT<span class="dim">]</span></p>
+        <div class="trow rev d2">
+          <span class="stag">PowerPoint</span><span class="stag">Photoshop</span><span class="stag">Illustrator</span><span class="stag">Premiere Pro</span><span class="stag">After Effects</span><span class="stag">Blender</span><span class="stag">Figma</span><span class="stag">Stable Diffusion</span><span class="stag">Miro</span><span class="stag">MG Taylor</span><span class="stag">Facilitation</span><span class="stag">Creative Consulting</span><span class="stag">DEI Training</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pgft"><p>&copy; 2026 Vince Tomlinson</p><p class="ver">PORTFOLIO v2.6 // ONLINE</p></div>
+</div>
+
+<!-- SERVICES -->
+<div class="pg" id="pg-services">
+  <div class="sec" style="padding-top:120px">
+    <p class="sl rev"><span class="dim">[03]</span>&nbsp; SERVICES</p>
+    <div class="svgrid rev">
+      <div class="svc"><div class="svnum">01 //</div><div class="svico">&#9672;</div><div class="svtit">Presentation Design</div><div class="svdsc">From boardroom decks to live broadcast events &mdash; high-impact presentations that inform, persuade and perform under pressure.</div><ul class="svlst"><li>Executive &amp; pitch decks</li><li>Live event operation</li><li>PowerPoint &amp; Keynote</li><li>Motion &amp; animated slides</li><li>Template systems</li></ul></div>
+      <div class="svc"><div class="svnum">02 //</div><div class="svico">&#9671;</div><div class="svtit">Workshop Facilitation</div><div class="svdsc">Using MG Taylor Methodology to help teams cut through complexity, align on decisions and move forward with clarity.</div><ul class="svlst"><li>Problem-solving workshops</li><li>Leadership alignment sessions</li><li>Visual thinking &amp; scribing</li><li>Remote &amp; hybrid facilitation</li><li>Miro &amp; digital collaboration</li></ul></div>
+      <div class="svc"><div class="svnum">03 //</div><div class="svico">&#9654;</div><div class="svtit">Video &amp; Motion Design</div><div class="svdsc">Engaging video content and motion graphics that bring brands and communications to life.</div><ul class="svlst"><li>Video editing &amp; post-production</li><li>Motion graphics &amp; animation</li><li>Internal communications video</li><li>Event showreels</li><li>Social &amp; digital content</li></ul></div>
+    </div>
+    <div class="svgrid-b rev d1">
+      <div class="svc"><div class="svnum">04 //</div><div class="svico">&#9670;</div><div class="svtit">Graphic Design &amp; Branding</div><div class="svdsc">Visual identities, campaign assets and internal communications design that give organisations a clear, consistent voice.</div><ul class="svlst"><li>Brand identity &amp; guidelines</li><li>Internal comms campaigns</li><li>Viva Engage &amp; SharePoint assets</li><li>Print &amp; digital collateral</li><li>Employee engagement</li></ul></div>
+      <div class="svc"><div class="svnum">05 //</div><div class="svico">&#9651;</div><div class="svtit">AI &amp; Generative Design</div><div class="svdsc">Harnessing generative AI tools to accelerate creative output and push what's possible.</div><ul class="svlst"><li>AI image generation</li><li>Stable Diffusion workflows</li><li>Prompt engineering</li><li>AI-assisted brand work</li><li>Creative consulting</li></ul></div>
+    </div>
+  </div>
+  <div class="pgft"><p>&copy; 2026 Vince Tomlinson</p><p class="ver">PORTFOLIO v2.6 // ONLINE</p></div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="pg" id="pg-experience">
+  <div class="sec" style="padding-top:120px">
+    <p class="sl rev"><span class="dim">[04]</span>&nbsp; EXPERIENCE</p>
+    <div class="expgrid">
+      <div style="position:sticky;top:120px" class="rev">
+        <div class="panel tr bl" style="padding:32px">
+          <div class="chead">CV // LOADED</div>
+          <div style="font-family:var(--head);font-size:32px;font-weight:700;line-height:1;margin-bottom:8px">9+ Years<br><span style="color:var(--blue)">Experience</span></div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.12em;margin-top:16px;line-height:2">Presentation Design<br>Adobe Creative Suite<br>Video &amp; Motion<br>Workshop Facilitation<br>Blender &amp; 3D Design</div>
+          <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--b2)"><a href="#" class="cbtn" style="padding:12px 24px;font-size:9px">Download CV &nbsp;&#8595;</a></div>
+        </div>
+      </div>
+      <div class="tline rev">
+        <div class="ti"><div class="tidot"></div><div class="tidate">MAY 2025 &mdash; FEB 2026</div><div class="tirole">Presentation Designer &amp; Operator</div><div class="tico">// DRPG</div><div class="tidsc">Designed and operated high-stakes presentations for live events, broadcasts and executive communications alongside some of the UK's largest brands.</div><div class="titags"><span class="titag">Presentation Design</span><span class="titag">Live Events</span><span class="titag">OBS</span><span class="titag">After Effects</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">APR 2021 &mdash; APR 2025</div><div class="tirole">Designer &mdash; Internal Communications</div><div class="tico">// Capgemini, HMRC</div><div class="tidsc">Designed unique brands and campaigns for HMRC initiatives, accumulating over 500 varied projects spanning graphic design, video editing and presentation design. Work regularly reached over half the market unit within 24 hours of release.</div><div class="titags"><span class="titag">Adobe Creative Suite</span><span class="titag">Internal Comms</span><span class="titag">Video Editing</span><span class="titag">Brand</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">APR 2020 &mdash; FEB 2025</div><div class="tirole">Co-lead &mdash; Race &amp; Equality Network</div><div class="tico">// Capgemini, HMRC</div><div class="tidsc">Co-led the HMRC Race &amp; Equality Network alongside the design role, driving awareness campaigns and initiatives to foster an inclusive workplace culture.</div><div class="titags"><span class="titag">Leadership</span><span class="titag">DEI</span><span class="titag">Campaigns</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">JUN 2022 &mdash; NOV 2022</div><div class="tirole">Accounts &amp; Business Manager</div><div class="tico">// Wargames Atlantic</div><div class="ti-con">// Concurrent with Capgemini role</div><div class="tidsc">Managed accounts and business development in a specialist commercial environment, running concurrently alongside Capgemini.</div><div class="titags"><span class="titag">Sales Management</span><span class="titag">Account Management</span><span class="titag">Concurrent Role</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">NOV 2016 &mdash; APR 2021</div><div class="tirole">Collaborative Designer</div><div class="tico">// Capgemini, Accelerated Solutions Environment</div><div class="tidsc">Facilitated collaboration events helping organisations resolve complex issues using MG Taylor Methodology. Specialised in graphics, scribing and A/V, and served as IT support lead for all technology in the event space.</div><div class="titags"><span class="titag">MG Taylor</span><span class="titag">Facilitation</span><span class="titag">Miro</span><span class="titag">A/V</span><span class="titag">IT Support</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">SEP 2015 &mdash; OCT 2016</div><div class="tirole">Consultant</div><div class="tico">// QA Consulting</div><div class="tidsc">Supplied specialist consultants to world-class commercial, financial and government institutions across Middleware, SaaS, Big Data and WCM technologies.</div><div class="titags"><span class="titag">Consulting</span><span class="titag">SaaS</span><span class="titag">Enterprise Tech</span></div></div>
+        <div class="ti"><div class="tidot"></div><div class="tidate">2012 &mdash; 2015</div><div class="tirole">BA Computer Games Design</div><div class="tico">// University of Huddersfield</div><div class="tidsc">Studied design, narrative and interactivity &mdash; building a foundation in visual communication, 3D modelling and creative problem solving.</div><div class="titags"><span class="titag">Education</span><span class="titag">3D Design</span><span class="titag">Visual Comms</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="pgft"><p>&copy; 2026 Vince Tomlinson</p><p class="ver">PORTFOLIO v2.6 // ONLINE</p></div>
+</div>
+
+<!-- CONTACT -->
+<div class="pg" id="pg-contact">
+  <div class="sec" style="padding-top:120px">
+    <p class="sl rev"><span class="dim">[05]</span>&nbsp; GET IN TOUCH</p>
+    <div class="cgrid">
+      <div class="rev"><h2 class="chtit">Let's make<br>something<br><span class="hl">great.</span></h2></div>
+      <div class="rev d1">
+        <div class="panel tr bl cpanel">
+          <div class="chead">CONTACT // OPEN</div>
+          <div class="ceml"><a href="mailto:vincentt327@gmail.com">vincentt327@gmail.com</a></div>
+          <p class="cnote">// Response time under 24 hours</p>
+          <a href="mailto:vincentt327@gmail.com" class="cbtn">Send a message &nbsp;<span class="carr">&#8599;</span></a>
+          <div class="srow"><a href="https://www.behance.net/vinnytomo" target="_blank">Behance</a><a href="https://www.linkedin.com/in/Vince-Tomlinson" target="_blank">LinkedIn</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pgft"><p>&copy; 2026 Vince Tomlinson</p><p class="ver">PORTFOLIO v2.6 // ONLINE</p></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* CURSOR — starts off-screen, only appears on first mousemove */
+var cur=document.getElementById('cur'),ring=document.getElementById('ring'),mx=-100,my=-100,rx=-100,ry=-100,cursorActive=false;
+document.addEventListener('mousemove',function(e){
+  if(!cursorActive){cursorActive=true;cur.style.transition='';ring.style.transition=ring.style.transition;}
+  mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+(function tick(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick);}());
+document.addEventListener('mouseover',function(e){if(e.target.closest('a,.wi,.stag,.cbtn,.sbox,.svc,.wtab,.pm-close'))document.body.classList.add('hov');});
+document.addEventListener('mouseout',function(e){if(e.target.closest('a,.wi,.stag,.cbtn,.sbox,.svc,.wtab,.pm-close'))document.body.classList.remove('hov');});
+
+/* PARTICLES */
+var bgc=document.getElementById('bgc'),ctx=bgc.getContext('2d'),PW,PH;
+function resizeBg(){PW=bgc.width=window.innerWidth;PH=bgc.height=window.innerHeight;}
+resizeBg();window.addEventListener('resize',resizeBg);
+var pts=[];for(var pi=0;pi<70;pi++)pts.push(mkPt(true));
+function mkPt(rnd){var b=Math.random()<0.65;return{x:Math.random()*window.innerWidth,y:rnd?Math.random()*window.innerHeight:window.innerHeight+10,r:Math.random()*.9+.2,vy:-(Math.random()*.18+.06),vx:(Math.random()-.5)*.08,a:Math.random()*.18+.04,c:b?'0,194,255':'180,220,255',fl:Math.random()*Math.PI*2,fs:Math.random()*.008+.003};}
+function drawBg(){ctx.clearRect(0,0,PW,PH);for(var i=0;i<pts.length;i++){var p=pts[i];p.y+=p.vy;p.x+=p.vx;p.fl+=p.fs;if(p.y<-10){pts[i]=mkPt(false);continue;}var a=p.a*(.75+.25*Math.sin(p.fl));var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,'rgba('+p.c+','+(a*.6)+')');g.addColorStop(1,'rgba('+p.c+',0)');ctx.beginPath();ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba('+p.c+','+Math.min(a*1.6,.35)+')';ctx.fill();}requestAnimationFrame(drawBg);}
+drawBg();
+
+/* WIPE */
+var bars=document.querySelectorAll('.wb'),busy=false;
+function wipeIn(cb){for(var i=0;i<bars.length;i++){bars[i].style.transition='none';bars[i].style.transformOrigin='top';bars[i].style.transform='scaleY(0)';}void document.getElementById('wipe').offsetHeight;for(var i=0;i<bars.length;i++){(function(b,d){b.style.transition='transform 0.4s cubic-bezier(0.76,0,0.24,1) '+d+'ms';requestAnimationFrame(function(){requestAnimationFrame(function(){b.style.transform='scaleY(1)';});});}(bars[i],i*40));}setTimeout(cb,480+bars.length*40);}
+function wipeOut(cb){for(var i=0;i<bars.length;i++){(function(b,d){b.style.transition='transform 0.4s cubic-bezier(0.76,0,0.24,1) '+d+'ms';b.style.transformOrigin='bottom';requestAnimationFrame(function(){requestAnimationFrame(function(){b.style.transform='scaleY(0)';});});}(bars[i],(bars.length-1-i)*40));}setTimeout(cb,480+bars.length*40);}
+
+/* ROUTER */
+var curPage='home';
+function goTo(id){if(id===curPage||busy)return;busy=true;wipeIn(function(){var pgs=document.querySelectorAll('.pg');for(var i=0;i<pgs.length;i++)pgs[i].classList.remove('on');var pg=document.getElementById('pg-'+id);pg.classList.add('on');pg.scrollTop=0;curPage=id;updateNav();initReveal(id);initSkillBars(id);wipeOut(function(){busy=false;if(id==='home')runPipe();});}); }
+function updateNav(){var ls=document.querySelectorAll('#nav [data-page]');for(var i=0;i<ls.length;i++)ls[i].classList.toggle('on',ls[i].dataset.page===curPage);}
+document.getElementById('nav').addEventListener('click',function(e){var a=e.target.closest('[data-page]');if(a){e.preventDefault();goTo(a.dataset.page);}});
+
+/* WORK TABS */
+document.querySelectorAll('.wtab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.wtab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.wcat-panel').forEach(function(p){p.classList.remove('on');});tab.classList.add('on');document.getElementById('wcat-'+tab.dataset.cat).classList.add('on');});});
+
+/* PROJECT DATA — image paths are relative URLs, not base64 */
+var IMG='images/';
+var projects={
+  posters:{cat:'GRAPHIC DESIGN // INTERNAL COMMS',title:'Poster &amp; Banner Designs',desc:'There is often a requirement for posters or banners to be placed around the workplace to showcase different events and functions. What I appreciate about my position is the opportunity it affords me to be as creative as possible with my designs.',items:[
+    {img:IMG+'esports.png',title:'Capgemini E-Sports Tournament Poster',desc:'Promotional poster for the Capgemini E-Sports Tournament — "Lose Yourself, Next Level Loading." Designed to generate excitement and encourage sign-ups for the Telford pilot event.',tags:['Photoshop','Poster Design','Internal Comms']},
+    {img:IMG+'ren1.jpg',title:'Race &amp; Equality Network — QR Poster',desc:'A vibrant illustrative poster for the Capgemini Race &amp; Equality Network, using bold colour and character illustration to communicate inclusivity and celebrate diverse backgrounds.',tags:['Illustrator','Poster Design','DEI','REN']},
+    {img:IMG+'wearen.jpg',title:'We Are REN — Banner',desc:'A bold, energetic banner for the Race &amp; Equality Network — "We Are REN." Uses dramatic colour burst photography to communicate pride, solidarity and energy.',tags:['Photoshop','Banner Design','DEI','REN']}
+  ]},
+  digis:{cat:'DIGITAL SIGNAGE // INTERNAL COMMS',title:'Digis &mdash; Digital Signage',desc:'In addition to posters and banners, a major output in my day-to-day work are "digis" &mdash; graphical signage displayed on screens throughout company-owned buildings in the UK. The creativity this affords me is always a rewarding experience.',items:[
+    {img:IMG+'ninja-dark.gif',title:'Become a Proposal Ninja &mdash; Dark Version',desc:'The darker, more cinematic treatment &mdash; a brooding silhouette against a red moon with hand-drawn typography. Designed to grab attention on office screens.',tags:['Photoshop','Digital Signage','Internal Comms']},
+    {img:IMG+'ninja-light.png',title:'Become a Proposal Ninja &mdash; Light Version',desc:'The brighter, character-led companion piece &mdash; a cartoon ninja wielding a laptop against an illustrated Japanese-inspired backdrop. Two very different treatments for the same campaign.',tags:['Photoshop','Digital Signage','Internal Comms']}
+  ]},
+  infographic:{cat:'DATA VISUALISATION // INFOGRAPHIC',title:'HMRC Organisational Infographic',desc:'There have been a few opportunities to create more in-depth graphics such as infographics. These are some of my favourite things to make in graphic design as I really appreciate how many small parts contribute to the big picture.',items:[
+    {img:IMG+'infographic-hmrc.jpg',title:'HMRC Market Unit Organisational Structure',desc:'An isometric city-style infographic mapping the full HMRC Market Unit organisational structure &mdash; covering Portfolios of Work, People, Practices and all major departments. One of those deeply satisfying projects where every small detail contributes to the whole.',tags:['Illustrator','Infographic','Data Visualisation','HMRC']}
+  ]},
+  logos:{cat:'BRAND IDENTITY // LOGO DESIGN',title:'Logo Design',desc:'Logos are a rarer opportunity but they are always fun to do! These are a mix of both personal and professional projects but all created with equal amounts of effort and pre-work.',items:[
+    {img:IMG+'logo-crashcourse.png',title:'Crash Course',desc:'Logo for the Crash Course learning platform &mdash; "Hands-On Learning. Building Capability." Clean, tech-forward design communicating accessible, practical education.',tags:['Illustrator','Logo Design']},
+    {img:IMG+'logo-diamondcomet.png',title:'Diamond Comet',desc:'Bold typographic logo for Diamond Comet &mdash; a personal project exploring dynamic, energetic brand identity with strong visual impact.',tags:['Illustrator','Logo Design']},
+    {img:IMG+'logo-egoproblems.png',title:'EgoProblems',desc:'Character-led logo design for EgoProblems &mdash; a playful, irreverent brand identity built around a distinctive illustrated mascot character.',tags:['Illustrator','Logo Design','Character Design']}
+  ]},
+  mraw:{cat:'VIDEO DIRECTION // DEI CAMPAIGN',title:'REN: Multi Racial Awareness Week',desc:'A project which was much more personal for me. I spearheaded a campaign to promote Multi Racial Awareness Week. As part of the campaign, I directed as well as starred in a video featuring fellow bi (or multi) racial heritages. I am extremely proud of the result.',items:[
+    {img:'https://img.youtube.com/vi/79881Y-wWZ4/maxresdefault.jpg',watch:'https://youtu.be/79881Y-wWZ4',title:'Multi Racial Awareness Week Campaign Video',desc:'Directed and starred in a short film created to promote Multi Racial Awareness Week &mdash; a deeply personal project celebrating bi and multi-racial identities within the Capgemini community.',tags:['Premiere Pro','Video Direction','DEI','REN']}
+  ]},
+  renwork:{cat:'VIDEO PRODUCTION // DEI CAMPAIGN',title:'REN: Working at Capgemini',desc:"As part of Capgemini's Race &amp; Equality Network campaign to generate a conversation about the experiences of people of colour in the workplace, videos were made showcasing different staff members. I was in the director's seat as well as being nominated to star in one!",items:[
+    {img:'https://img.youtube.com/vi/fft1D-Wd4uE/maxresdefault.jpg',watch:'https://youtu.be/fft1D-Wd4uE',title:'Staff Showcase Video Series',desc:"A series of videos produced to generate open conversation about the experiences of people of colour at Capgemini. Served as both director and on-screen talent.",tags:['Premiere Pro','Video Production','DEI','REN']}
+  ]},
+  flex:{cat:'MOTION DESIGN // ANIMATION',title:'Capgemini Flex Animation',desc:'I was tasked with creating an animation to detail the flex benefits available to all Capgemini staff. I had a lot of fun making this, especially without a lot of previous experience in animation!',items:[
+    {img:'https://img.youtube.com/vi/vjpkkDWBAQQ/maxresdefault.jpg',watch:'https://youtu.be/vjpkkDWBAQQ',title:'Flex Benefits Explainer Animation',desc:'An animated explainer detailing the Flex benefits package available to all Capgemini staff &mdash; a rewarding challenge that pushed my skills into motion design and animation.',tags:['After Effects','Animation','Motion Design']}
+  ]},
+  esportsvid:{cat:'VIDEO EDITING // EVENT PRODUCTION',title:'Capgemini e-Sports Tournament',desc:'In the aftermath of an e-Sports tournament I hosted for colleagues, I made a fun little summary video to showcase the event in the hopes of making a good case to host more tournaments in the future.',items:[
+    {img:'https://img.youtube.com/vi/aWPZUOY9Q3I/maxresdefault.jpg',watch:'https://youtu.be/aWPZUOY9Q3I',title:'E-Sports Tournament Summary Video',desc:'An energetic summary video produced following the Capgemini E-Sports Tournament I hosted &mdash; capturing the atmosphere and highlights to build the case for making it a regular fixture.',tags:['Premiere Pro','Video Editing','Event Production']}
+  ]},
+  podcast:{cat:'VIDEO PRODUCTION // EDUCATION',title:'In Living Colours Podcast',desc:"As a part of the education stream in Capgemini's Race &amp; Equality network, we took to making a video podcast to help educate the viewer on different cultures. All footage was recorded via Teams and I am very proud of the result given the limitations!",items:[
+    {img:'https://img.youtube.com/vi/g96rDo0epWQ/maxresdefault.jpg',watch:'https://youtu.be/g96rDo0epWQ',title:'In Living Colours &mdash; Video Podcast Series',desc:"A video podcast series produced as part of REN's education stream. Recorded entirely over Microsoft Teams &mdash; extremely proud of what was achieved within those constraints.",tags:['Premiere Pro','Video Production','Podcast','DEI','REN']}
+  ]},
+  daylife:{cat:'INTERACTIVE PRESENTATION // DEI',title:'A Day in Your Life: A Black Experience',desc:"An interactive scenario-based presentation with branching narrative paths, designed to immerse participants in the day-to-day experiences of Black colleagues. All paths are based on real-life examples.",items:[
+    {img:null,title:'Scenario I &mdash; A Black Experience',desc:'Walking participants through a day as a Black employee and presenting branching choices that reveal real consequences of workplace bias, microaggressions and systemic barriers.',tags:['PowerPoint','Interactive Design','DEI','REN']}
+  ]},
+  yasuke:{cat:'PRESENTATION DESIGN // STORYTELLING',title:'Yasuke: The African Samurai',desc:'Yasuke was an African warrior who served as a Samurai under the Japanese warlord Oda Nobunaga in the late 16th century. His story is one of cultural exchange, resilience, and remarkable achievement.',items:[
+    {img:null,title:'Yasuke &mdash; The African Samurai',desc:'A cinematic presentation exploring the extraordinary life of Yasuke &mdash; the first recorded non-Japanese samurai. Bold typography, dramatic imagery and compelling narrative structure.',tags:['PowerPoint','Presentation Design','Storytelling','History']}
+  ]},
+  blm:{cat:'PRESENTATION DESIGN // DEI WORKSHOP',title:'Black Lives Matter',desc:'A DEI awareness presentation built around a structured two-session workshop facilitation framework. All paths and discussions are grounded in real-life examples.',items:[
+    {img:null,title:'Blue Ghost Blues &amp; Little Red Rooster',desc:'A two-session DEI facilitation framework: Session One guides participants through lived experiences; Session Two moves toward action-planning and organisational change.',tags:['PowerPoint','Facilitation','DEI','Workshop Design']}
+  ]}
+};
+
+/* MODAL */
+var modal=document.getElementById('proj-modal'),pmInner=document.getElementById('pm-inner');
+function openProject(id){
+  var p=projects[id];if(!p)return;
+  var h='<div class="pm-cat">'+p.cat+'</div>';
+  h+='<div class="pm-title">'+p.title+'</div>';
+  h+='<div class="pm-desc">'+p.desc+'</div>';
+  h+='<div class="pm-divider"></div><div class="pm-gallery">';
+  for(var i=0;i<p.items.length;i++){
+    var it=p.items[i],num=(i+1<10?'0':'')+(i+1);
+    h+='<div class="pm-item"><div class="pm-img-wrap">';
+    if(it.img){h+='<img class="pm-img" src="'+it.img+'" alt="'+it.title+'" loading="lazy">';}
+    else{h+='<div class="pm-placeholder"><span>// IMAGE COMING SOON</span></div>';}
+    h+='</div><div class="pm-img-info"><div class="pm-img-num">// '+num+'</div><div class="pm-img-title">'+it.title+'</div><div class="pm-img-desc">'+it.desc+'</div>';
+    if(it.tags){h+='<div class="pm-tags">';for(var j=0;j<it.tags.length;j++)h+='<span class="pm-tag">'+it.tags[j]+'</span>';h+='</div>';}
+    if(it.watch){h+='<a class="pm-watch" href="'+it.watch+'" target="_blank" rel="noopener">Watch on YouTube &nbsp;&#8599;</a>';}
+    h+='</div></div>';
+  }
+  h+='</div>';
+  pmInner.innerHTML=h;modal.scrollTop=0;modal.classList.add('on');
 }
+function closeModal(){modal.classList.remove('on');}
+document.getElementById('pm-close').addEventListener('click',closeModal);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.querySelectorAll('.wi[data-project]').forEach(function(wi){wi.addEventListener('click',function(){openProject(wi.dataset.project);});});
+
+/* NAME CHARS */
+var words=[{id:'nl1',text:'Vince',cls:'ch ink'},{id:'nl2',text:'Tomlinson',cls:'ch blue glitch'}],allChars=[];
+for(var wi=0;wi<words.length;wi++){var el=document.getElementById(words[wi].id),ltrs=words[wi].text.split('');for(var li=0;li<ltrs.length;li++){var sp=document.createElement('span');sp.className=words[wi].cls;sp.textContent=ltrs[li];el.appendChild(sp);allChars.push(sp);}}
+updateNav();
+
+/* PIPE */
+function runPipe(){var nm=document.getElementById('hname'),pp=document.getElementById('pipe'),ids=['eyebrow','hrole','htag','hbot'];for(var i=0;i<allChars.length;i++){allChars[i].style.transition='none';allChars[i].classList.remove('in','lit');}pp.style.opacity='0';pp.style.left='0px';for(var i=0;i<ids.length;i++)document.getElementById(ids[i]).classList.remove('in');void nm.offsetWidth;setTimeout(function(){var W=nm.offsetWidth;if(!W)return;for(var i=0;i<allChars.length;i++)allChars[i].style.transition='';pp.style.opacity='1';var DUR=1300,t0=null;function fr(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/DUR,1),e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2,x=e*W;pp.style.left=x+'px';var wr=nm.getBoundingClientRect();for(var i=0;i<allChars.length;i++){if(allChars[i].classList.contains('in'))continue;if(allChars[i].getBoundingClientRect().left-wr.left<=x)allChars[i].classList.add('in');}if(p<1){requestAnimationFrame(fr);}else{for(var i=0;i<allChars.length;i++)allChars[i].classList.add('in');pp.style.opacity='0';setTimeout(function(){var ids=['eyebrow','hrole','htag','hbot'];for(var i=0;i<ids.length;i++)document.getElementById(ids[i]).classList.add('in');typeCoord();},200);}}requestAnimationFrame(fr);},50);}
+
+/* REPULSION */
+document.addEventListener('mousemove',function(e){for(var i=0;i<allChars.length;i++){if(!allChars[i].classList.contains('in'))continue;var r=allChars[i].getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=e.clientX-cx,dy=e.clientY-cy,d=Math.sqrt(dx*dx+dy*dy);if(d<180){var f=1-d/180;allChars[i].style.transform='translateX('+((-dx*f*.45))+'px) translateY('+((-dy*f*.45))+'px)';allChars[i].classList.add('lit');}else{allChars[i].style.transform='';allChars[i].classList.remove('lit');}}});
+
+/* REVEAL */
+var ro=new IntersectionObserver(function(en){for(var i=0;i<en.length;i++)if(en[i].isIntersecting)en[i].target.classList.add('in');},{threshold:.06,rootMargin:'0px 0px -40px 0px'});
+function initReveal(id){var els=document.getElementById('pg-'+id).querySelectorAll('.rev');for(var i=0;i<els.length;i++){els[i].classList.remove('in');ro.observe(els[i]);if(els[i].getBoundingClientRect().top<window.innerHeight)els[i].classList.add('in');}}
+
+/* SKILL BARS */
+function initSkillBars(id){if(id!=='about')return;var c=document.getElementById('skbars');if(!c)return;var fs=c.querySelectorAll('.skfil');for(var i=0;i<fs.length;i++)fs[i].style.width='0';var fired=false;new IntersectionObserver(function(en){for(var i=0;i<en.length;i++){if(en[i].isIntersecting&&!fired){fired=true;var rows=c.querySelectorAll('.skrow');for(var j=0;j<rows.length;j++){(function(row,d){setTimeout(function(){row.querySelector('.skfil').style.width=row.dataset.pct+'%';},d);}(rows[j],j*140));}}}},{threshold:.2}).observe(c);}
+
+/* COORD */
+function typeCoord(){var el=document.getElementById('coord-tl');if(!el)return;var full=el.textContent;el.textContent='';var i=0;var t=setInterval(function(){if(i<full.length)el.textContent=full.slice(0,++i);else clearInterval(t);},30);}
+window.addEventListener('load',function(){runPipe();});
+}());
 </script>
 </body>
 </html>
